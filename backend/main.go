@@ -1,17 +1,35 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/ddash/routes"
 	"github.com/gorilla/mux"
-) 
+	"github.com/joho/godotenv"
+)
 
+func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-func main() { 
 	r := mux.NewRouter()
+	s := r.PathPrefix("/api").Subrouter()
 
-	r.HandleFunc("/", routes.HomeHandler)
+	// index route
+	r.HandleFunc("/", routes.HomeHandler) 
 
-	http.ListenAndServe(":4000", r)
+	// routes
+	routes.DockerRoutes(s) 
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
+	// server
+	http.ListenAndServe("localhost:"+port, r)
 }
