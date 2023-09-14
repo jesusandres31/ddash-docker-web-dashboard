@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/ddash/config"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
-	"golang.org/x/net/context"
 )
+
 
 type ContainerInfo struct {
 	ID    string `json:"id"`
@@ -19,15 +19,8 @@ type ContainerInfo struct {
 	Created string `json:"created"` 
 }
 
-func DockerPSHandler(w http.ResponseWriter, r *http.Request) {
-    ctx := context.Background()
-    cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
+func DockerPSHandler(w http.ResponseWriter, r *http.Request) {  
+    containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{})
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
@@ -42,8 +35,7 @@ func DockerPSHandler(w http.ResponseWriter, r *http.Request) {
 			Status: container.Status,
 			State: container.State,
 			// Ports: container.Ports,
-			// Created: container.Created,
-            
+			// Created: container.Created, 
         }
         containerInfoList = append(containerInfoList, containerInfo)
     }

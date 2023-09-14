@@ -1,9 +1,0 @@
-
-###
-GET http://localhost:8000
-
-###
-GET http://localhost:8000/api
- 
-###
-GET http://localhost:8000/api/docker/ps
