@@ -10,7 +10,7 @@ import (
 
 
 type ContainerInfo struct {
-	ID    string `json:"id"`
+	ID string `json:"id"`
 	Names []string `json:"names"`
 	Image string `json:"image"` 
 	Status string `json:"status"` 
@@ -19,7 +19,7 @@ type ContainerInfo struct {
 	Created string `json:"created"` 
 }
 
-func DockerPSHandler(w http.ResponseWriter, r *http.Request) {  
+func ListContainers(w http.ResponseWriter, r *http.Request) {  
     containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{})
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)

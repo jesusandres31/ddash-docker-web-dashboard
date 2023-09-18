@@ -40,7 +40,7 @@ func main() {
 	r.HandleFunc("/", routes.HomeHandler) 
 
 	// routes
-	routes.DockerRoutes(s) 
+	routes.ContainerRoutes(s) 
 
 	port := os.Getenv("PORT")
 	if port == "" {
