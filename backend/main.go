@@ -28,25 +28,20 @@ func init() {
 }
 
 func main() {
+	// load envs
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	r := mux.NewRouter()
-	s := r.PathPrefix("/api").Subrouter()
-
-	// index route
-	r.HandleFunc("/", routes.HomeHandler) 
-
-	// routes
-	routes.ContainerRoutes(s) 
-
+	// router
+	r := mux.NewRouter() 
+    routes.RegisterRoutes(r)
+ 
+	// server
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
-
-	// server
 	http.ListenAndServe("localhost:"+port, r)
 }
