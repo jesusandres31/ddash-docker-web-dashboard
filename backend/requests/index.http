@@ -1,7 +1,32 @@
+@server = http://localhost:8000
+@api = http://localhost:8000/api
 
 ###
-GET http://localhost:8000
+GET {{server}}
 
 ###
-GET http://localhost:8000/api
- 
+GET {{api}}
+
+
+###
+### CONTAINER
+###
+
+###
+GET {{api}}/container
+  
+###
+### VOLUME
+###
+  
+###
+### IMAGE
+###
+
+###
+### CONTEXT
+###
+
+###
+### AUTH
+###
