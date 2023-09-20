@@ -1,6 +1,6 @@
 # backend
 
-run the application:
+run the application for development:
 
 ```
 air
