@@ -14,6 +14,9 @@ GET {{api}}
 
 ###
 GET {{api}}/container
+
+###
+GET {{api}}/container/sse
   
 ###
 ### VOLUME
