@@ -23,11 +23,7 @@ type ContainerInfo struct {
 	Created string `json:"created"` 
 }
 
-func ListContainers(w http.ResponseWriter, r *http.Request) {  
-	w.Header().Set("Content-Type", "text/event-stream")
-    w.Header().Set("Cache-Control", "no-cache")
-    w.Header().Set("Connection", "keep-alive")
-
+func ListContainers(w http.ResponseWriter, r *http.Request) {
     containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{})
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
