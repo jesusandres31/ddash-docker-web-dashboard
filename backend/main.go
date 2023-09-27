@@ -12,19 +12,21 @@ import (
 
 	"github.com/docker/docker/client"
 	"golang.org/x/net/context"
+
+	"github.com/rs/cors"
 )
- 
+
 func init() {
 	// init context background
 	config.BgCtx = context.Background()
 
 	// init docker client
 	var err error
-    config.DockerCli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-    if err != nil {
+	config.DockerCli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
 		log.Fatal(err)
-        return
-    }
+		return
+	}
 }
 
 func main() {
@@ -35,13 +37,18 @@ func main() {
 	}
 
 	// router
-	r := mux.NewRouter() 
-    routes.RegisterRoutes(r)
- 
+	r := mux.NewRouter()
+	routes.RegisterRoutes(r)
+
+	// CORS middleware
+	c := cors.Default().Handler(r)
+
 	// server
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
-	http.ListenAndServe("localhost:"+port, r)
+
+	log.Printf("Server listening on :%s...\n", port)
+	http.ListenAndServe(":"+port, c)
 }

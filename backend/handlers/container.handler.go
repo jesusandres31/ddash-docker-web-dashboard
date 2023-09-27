@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"reflect"
+	"sync"
 	"time"
 
 	"github.com/ddash/config"
@@ -23,10 +24,7 @@ type ContainerInfo struct {
 }
 
 func ListContainers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Connection", "keep-alive")
-
+	w.Header().Set("Content-Type", "application/json")
 	containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -47,7 +45,6 @@ func ListContainers(w http.ResponseWriter, r *http.Request) {
 		containerInfoList = append(containerInfoList, containerInfo)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(containerInfoList)
 }
 
@@ -56,25 +53,46 @@ func ServerSentEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 
-	var prevContainerData []ContainerInfo
+	// Use a WaitGroup to wait for goroutine to finish before returning
+	var wg sync.WaitGroup
+	wg.Add(1)
 
-	for {
-		currentContainerData := getContainerData()
+	// Create a channel to signal the goroutine to exit
+	stopChan := make(chan struct{})
 
-		if !reflect.DeepEqual(currentContainerData, prevContainerData) {
-			data, err := json.Marshal(currentContainerData)
-			if err != nil {
-				log.Println("Error encoding data:", err)
-				return
+	// Start a goroutine to handle SSE updates
+	go func() {
+		defer wg.Done()
+		defer close(stopChan)
+
+		prevContainerData := []ContainerInfo{}
+
+		for {
+			select {
+			case <-stopChan:
+				return // Exit the goroutine when signaled
+			default:
+				currentContainerData := getContainerData()
+
+				if !reflect.DeepEqual(currentContainerData, prevContainerData) {
+					data, err := json.Marshal(currentContainerData)
+					if err != nil {
+						log.Println("Error encoding data:", err)
+						return
+					}
+					fmt.Fprintf(w, "data: %s\n\n", data)
+					w.(http.Flusher).Flush()
+
+					prevContainerData = currentContainerData
+				}
+
+				time.Sleep(2 * time.Second)
 			}
-			fmt.Fprintf(w, "data: %s\n\n", data)
-			w.(http.Flusher).Flush()
-
-			prevContainerData = currentContainerData
 		}
+	}()
 
-		time.Sleep(2 * time.Second)
-	}
+	// Wait for the goroutine to finish before returning
+	wg.Wait()
 }
 
 func getContainerData() []ContainerInfo {
@@ -92,7 +110,6 @@ func getContainerData() []ContainerInfo {
 			Image:  container.Image,
 			Status: container.Status,
 			State:  container.State,
-			// Otras propiedades que desees incluir
 		}
 		containerInfoList = append(containerInfoList, containerInfo)
 	}
