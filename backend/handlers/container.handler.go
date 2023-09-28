@@ -6,95 +6,81 @@ import (
 	"log"
 	"net/http"
 	"reflect"
-	"sync"
 	"time"
 
 	"github.com/ddash/config"
+	"github.com/ddash/constants"
+	"github.com/ddash/utils"
 	"github.com/docker/docker/api/types"
 )
 
 type ContainerInfo struct {
-	ID      string   `json:"id"`
-	Names   []string `json:"names"`
-	Image   string   `json:"image"`
-	Status  string   `json:"status"`
-	State   string   `json:"state"`
-	Ports   string   `json:"ports"`
-	Created string   `json:"created"`
+	ID     string   `json:"id"`
+	Names  []string `json:"names"`
+	Image  string   `json:"image"`
+	Status string   `json:"status"`
+	State  string   `json:"state"`
 }
 
+// get containers
 func ListContainers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	sseParam := r.URL.Query().Get(constants.SSEQueryParam)
 
-	var containerInfoList []ContainerInfo
-	for _, container := range containers {
-		containerInfo := ContainerInfo{
-			ID:     container.ID,
-			Names:  container.Names,
-			Image:  container.Image,
-			Status: container.Status,
-			State:  container.State,
-			// Ports: container.Ports,
-			// Created: container.Created,
-		}
-		containerInfoList = append(containerInfoList, containerInfo)
+	if sseParam == "true" {
+		serveSSE(w, r)
+	} else {
+		serveJSON(w, r)
 	}
-
-	json.NewEncoder(w).Encode(containerInfoList)
 }
 
-func ServerSentEvents(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Connection", "keep-alive")
+// serve JSON
+func serveJSON(w http.ResponseWriter, r *http.Request) {
+	utils.SeHTTPResHeaders(w)
 
-	// Use a WaitGroup to wait for goroutine to finish before returning
-	var wg sync.WaitGroup
-	wg.Add(1)
+	containers := getContainerData()
+	json.NewEncoder(w).Encode(containers)
+}
 
-	// Create a channel to signal the goroutine to exit
-	stopChan := make(chan struct{})
+// serve SSE
+func serveSSE(w http.ResponseWriter, r *http.Request) {
+	utils.SetSSEHeaders(w)
 
-	// Start a goroutine to handle SSE updates
+	updates := make(chan []ContainerInfo)
+	defer close(updates)
+
 	go func() {
-		defer wg.Done()
-		defer close(stopChan)
-
 		prevContainerData := []ContainerInfo{}
 
 		for {
-			select {
-			case <-stopChan:
-				return // Exit the goroutine when signaled
-			default:
-				currentContainerData := getContainerData()
+			currentContainerData := getContainerData()
 
-				if !reflect.DeepEqual(currentContainerData, prevContainerData) {
-					data, err := json.Marshal(currentContainerData)
-					if err != nil {
-						log.Println("Error encoding data:", err)
-						return
-					}
-					fmt.Fprintf(w, "data: %s\n\n", data)
-					w.(http.Flusher).Flush()
-
-					prevContainerData = currentContainerData
-				}
-
-				time.Sleep(2 * time.Second)
+			if !reflect.DeepEqual(prevContainerData, currentContainerData) {
+				updates <- currentContainerData
+				prevContainerData = currentContainerData
 			}
+
+			time.Sleep(constants.PollingInterval)
 		}
 	}()
 
-	// Wait for the goroutine to finish before returning
-	wg.Wait()
+	for {
+		select {
+		case containerData := <-updates:
+			data, err := json.Marshal(containerData)
+			if err != nil {
+				log.Println("Error encoding data:", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			fmt.Fprintf(w, "data: %s\n\n", data)
+			w.(http.Flusher).Flush()
+		case <-r.Context().Done():
+			return
+		}
+	}
 }
 
+// utils
 func getContainerData() []ContainerInfo {
 	containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{})
 	if err != nil {

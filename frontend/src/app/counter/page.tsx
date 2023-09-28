@@ -7,7 +7,7 @@ export default function Counter() {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      'http://localhost:8000/api/container/sse'
+      'http://localhost:8000/api/container?sse=true'
     );
 
     eventSource.onmessage = (event) => {

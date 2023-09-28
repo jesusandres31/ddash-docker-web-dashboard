@@ -13,10 +13,10 @@ GET {{api}}
 ###
 
 ###
-GET {{api}}/container
+GET {{api}}/container?sse=false
 
 ###
-GET {{api}}/container/sse
+GET {{api}}/container?sse=true
   
 ###
 ### VOLUME
