@@ -22,18 +22,16 @@ type ContainerInfo struct {
 	State  string   `json:"state"`
 }
 
-// get containers
 func ListContainers(w http.ResponseWriter, r *http.Request) {
 	sseParam := r.URL.Query().Get(constants.SSEQueryParam)
 
-	if sseParam == "true" {
+	if sseParam == constants.SSEQueryKey {
 		serveSSE(w, r)
 	} else {
 		serveJSON(w, r)
 	}
 }
 
-// serve JSON
 func serveJSON(w http.ResponseWriter, r *http.Request) {
 	utils.SeHTTPResHeaders(w)
 
@@ -41,7 +39,6 @@ func serveJSON(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(containers)
 }
 
-// serve SSE
 func serveSSE(w http.ResponseWriter, r *http.Request) {
 	utils.SetSSEHeaders(w)
 

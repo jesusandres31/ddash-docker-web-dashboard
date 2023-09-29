@@ -49,6 +49,6 @@ func main() {
 		port = "8000"
 	}
 
-	log.Printf("Server listening on :%s...\n", port)
+	log.Printf("Server on port :%s...\n", port)
 	http.ListenAndServe(":"+port, c)
 }
