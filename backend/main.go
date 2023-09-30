@@ -50,5 +50,5 @@ func main() {
 	}
 
 	log.Printf("Server on port :%s...\n", port)
-	http.ListenAndServe(":"+port, c)
+	http.ListenAndServe("localhost:"+port, c)
 }
