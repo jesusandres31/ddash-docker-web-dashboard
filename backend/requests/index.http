@@ -7,10 +7,9 @@ GET {{server}}
 ###
 GET {{api}}
 
-
-###
-### CONTAINER
-###
+##################
+######### CONTAINER
+##################
 
 ###
 GET {{api}}/container?sse=false
@@ -18,24 +17,43 @@ GET {{api}}/container?sse=false
 ###
 GET {{api}}/container?sse=true
   
-###
-### VOLUME
-###
-  
-###
-GET {{api}}/volume
-
-###
-### IMAGE
-###
+##################
+######### IMAGE
+##################
 
 ###
 GET {{api}}/image
 
-###
-### CONTEXT
-###
+##################
+######### NETWORK
+##################
 
 ###
-### AUTH
+GET {{api}}/network
+
+##################
+######### VOLUME
+##################
+  
 ###
+GET {{api}}/volume
+ 
+##################
+######### SYSTEM
+##################
+
+###
+GET {{api}}/system/info
+
+###
+GET {{api}}/system/disk-usage
+ 
+###
+GET {{api}}/system/ping
+  
+##################
+######### AUTH
+##################
+
+###
+GET {{api}}/auth

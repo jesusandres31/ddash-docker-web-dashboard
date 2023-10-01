@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/ddash/handlers"
+	"github.com/ddash/src/handlers"
 	"github.com/gorilla/mux"
 )
 

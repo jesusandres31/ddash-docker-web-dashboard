@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ddash/config"
-	"github.com/ddash/routes"
+	"github.com/ddash/src/config"
+	"github.com/ddash/src/routes"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 
@@ -49,6 +49,6 @@ func main() {
 		port = "8000"
 	}
 
-	log.Printf("Server on port :%s...\n", port)
+	log.Printf("Server on localhost:%s\n", port)
 	http.ListenAndServe("localhost:"+port, c)
 }
