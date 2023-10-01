@@ -1,6 +1,6 @@
 # ddash - Docker Web Dashboard 🐋🚢📈
 
-ddash is a Docker Web Dashboard that provides a user-friendly interface for managing Docker containers, images, volumes and networks.
+ddash is a lightweight Docker Web Dashboard that provides a simple interface for managing Docker containers, images, volumes and networks.
 
 ## Features
 
