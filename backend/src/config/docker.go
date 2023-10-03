@@ -6,6 +6,7 @@ import (
 )
 
 var (
-    DockerCli *client.Client
-    BgCtx     context.Context
+	DockerCli *client.Client
+	BgCtx     context.Context
+	JWTKey    = []byte("your-secret-key")
 )

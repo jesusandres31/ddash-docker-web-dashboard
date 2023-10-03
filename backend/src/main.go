@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/ddash/src/config"
+	"github.com/ddash/src/libs"
 	"github.com/ddash/src/routes"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -35,6 +36,10 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	// db
+	libs.DBConnection()
+	libs.DBMigrations()
 
 	// router
 	r := mux.NewRouter()
