@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/ddash/src/config"
-	"github.com/ddash/src/libs"
+	"github.com/ddash/src/lib"
 	"github.com/ddash/src/routes"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -38,8 +38,8 @@ func main() {
 	}
 
 	// db
-	libs.DBConnection()
-	libs.DBMigrations()
+	lib.DBConnection()
+	lib.DBMigrations()
 
 	// router
 	r := mux.NewRouter()

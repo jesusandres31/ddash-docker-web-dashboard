@@ -40,7 +40,7 @@ GET {{api}}/volume
  
 ##################
 ######### SYSTEM
-##################
+################## 
 
 ###
 GET {{api}}/system/info
@@ -56,4 +56,24 @@ GET {{api}}/system/ping
 ##################
 
 ###
-GET {{api}}/auth
+GET {{api}}/user
+
+###  
+POST {{api}}/user
+Content-Type: application/json
+
+{
+  "Name": "John Doe", 
+  "email": "john@gmail.com"
+}
+ 
+###  
+POST {{api}}/user/1
+Content-Type: application/json
+
+{
+  "Name": "John Doe2", 
+}
+ 
+###   
+DELETE {{api}}/user/2

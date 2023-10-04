@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/ddash/src/config"
-	"github.com/ddash/src/constants"
+	"github.com/ddash/src/constant"
 	"github.com/ddash/src/utils"
 	"github.com/docker/docker/api/types"
 )
@@ -48,9 +48,9 @@ func getContainers() []types.Container {
 }
 
 func ListContainers(w http.ResponseWriter, r *http.Request) {
-	sseParam := r.URL.Query().Get(constants.SSEQueryParam)
+	sseParam := r.URL.Query().Get(constant.SSEQueryParam)
 
-	if sseParam != constants.SSEQueryKey {
+	if sseParam != constant.SSEQueryKey {
 		// response SSE.
 		utils.SeHTTPResHeaders(w)
 
@@ -58,7 +58,6 @@ func ListContainers(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(containers); err != nil {
 			log.Printf("Error encoding data: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			return
 		}
 
 	} else {
@@ -79,7 +78,7 @@ func ListContainers(w http.ResponseWriter, r *http.Request) {
 					prevContainer = containers
 				}
 
-				time.Sleep(constants.PollingInterval)
+				time.Sleep(constant.PollingInterval)
 			}
 		}()
 

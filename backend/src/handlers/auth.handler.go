@@ -5,11 +5,8 @@ import (
 	"net/http"
 
 	"github.com/ddash/src/models"
-	"github.com/ddash/src/utils"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var users []models.User
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var newUser models.User
@@ -19,7 +16,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Generate a salt
+	/* // Generate a salt
 	salt := generateSalt()
 
 	// Hash the password with the salt
@@ -28,7 +25,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	newUser.PasswordHash = passwordHash
 	newUser.Salt = salt
 
-	users = append(users, newUser)
+	users = append(users, newUser) */
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -41,7 +38,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Find the user by email
-	for _, u := range users {
+	/* for _, u := range users {
 		if u.Email == user.Email {
 			// Verify the password hash
 			if verifyPassword(u.PasswordHash, user.Password, u.Salt) {
@@ -54,7 +51,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-	}
+	} */
 
 	http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 }
