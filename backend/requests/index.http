@@ -52,7 +52,7 @@ GET {{api}}/system/disk-usage
 GET {{api}}/system/ping
   
 ##################
-######### AUTH
+######### USER
 ##################
 
 ###
@@ -64,16 +64,17 @@ Content-Type: application/json
 
 {
   "Name": "John Doe", 
-  "email": "john@gmail.com"
+  "Email": "john2@gmail.com"
 }
  
 ###  
-POST {{api}}/user/1
+PUT {{api}}/user/1
 Content-Type: application/json
 
 {
   "Name": "John Doe2", 
+  "Email": "john2@gmail.com"
 }
  
 ###   
-DELETE {{api}}/user/2
+DELETE {{api}}/user/1

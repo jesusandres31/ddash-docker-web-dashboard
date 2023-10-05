@@ -11,6 +11,7 @@ import (
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
+
 	lib.DB.Find(&users)
 
 	json.NewEncoder(w).Encode(&users)
@@ -19,6 +20,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user models.User
+
 	lib.DB.First(&user, params["id"])
 
 	if user.Id == 0 {
@@ -32,6 +34,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
+
 	json.NewDecoder(r.Body).Decode(&user)
 	createdUser := lib.DB.Create(&user)
 	if createdUser.Error != nil {
@@ -45,6 +48,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user models.User
+
 	lib.DB.First(&user, params["id"])
 
 	if user.Id == 0 {
@@ -53,16 +57,20 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var newUser models.User
-	err := json.NewDecoder(r.Body).Decode(&newUser)
+	var updatedUser models.User
+	err := json.NewDecoder(r.Body).Decode(&updatedUser)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	user.Name = newUser.Name
-	user.Email = newUser.Email
+	if updatedUser.Name != "" {
+		user.Name = updatedUser.Name
+	}
+	if updatedUser.Email != "" {
+		user.Email = updatedUser.Email
+	}
 
 	lib.DB.Save(&user)
 
@@ -72,6 +80,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user models.User
+
 	lib.DB.First(&user, params["id"])
 
 	if user.Id == 0 {
@@ -80,6 +89,10 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	deletedUser := user
+
 	lib.DB.Unscoped().Delete(&user)
+
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(deletedUser)
 }
