@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 )
 
 func ListNetworks(w http.ResponseWriter, r *http.Request) {
-	ExecuteAndRespond(w, r, func() (interface{}, error) {
+	handleRes(w, r, func() (interface{}, error) {
 		return lib.DockerCli.NetworkList(lib.Ctx, types.NetworkListOptions{})
 	})
 }

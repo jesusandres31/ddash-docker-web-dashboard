@@ -3,7 +3,7 @@ package lib
 import (
 	"log"
 
-	"github.com/ddash/src/models"
+	"github.com/ddash/src/model"
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
@@ -25,5 +25,5 @@ func DBConnection() {
 }
 
 func DBMigrations() {
-	DB.AutoMigrate(models.User{})
+	DB.AutoMigrate(model.User{})
 }

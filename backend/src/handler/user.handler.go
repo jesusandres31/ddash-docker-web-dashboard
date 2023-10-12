@@ -1,16 +1,16 @@
-package handlers
+package handler
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"github.com/ddash/src/lib"
-	"github.com/ddash/src/models"
+	"github.com/ddash/src/model"
 	"github.com/gorilla/mux"
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	var users []models.User
+	var users []model.User
 
 	lib.DB.Find(&users)
 
@@ -19,7 +19,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	var user models.User
+	var user model.User
 
 	lib.DB.First(&user, params["id"])
 
@@ -33,7 +33,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	var user models.User
+	var user model.User
 
 	json.NewDecoder(r.Body).Decode(&user)
 	createdUser := lib.DB.Create(&user)
@@ -47,7 +47,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	var user models.User
+	var user model.User
 
 	lib.DB.First(&user, params["id"])
 
@@ -57,7 +57,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var updatedUser models.User
+	var updatedUser model.User
 	err := json.NewDecoder(r.Body).Decode(&updatedUser)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -79,7 +79,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	var user models.User
+	var user model.User
 
 	lib.DB.First(&user, params["id"])
 

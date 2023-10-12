@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"github.com/ddash/src/handlers"
+	"github.com/ddash/src/handler"
 	"github.com/gorilla/mux"
 )
 
 func NetworkRoutes(r *mux.Router) {
-	r.HandleFunc("/network", handlers.ListNetworks).Methods("GET")
+	r.HandleFunc("/network", handler.ListNetworks).Methods("GET")
 }

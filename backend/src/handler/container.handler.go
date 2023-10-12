@@ -1,6 +1,7 @@
-package handlers
+package handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -46,13 +47,33 @@ func getContainers() []types.Container {
 	return containers
 }
 
+func sseContainerUpdater(ctx context.Context, c chan []types.Container) {
+	defer close(c)
+
+	prevContainer := []types.Container{}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			containers := getContainers()
+
+			if !reflect.DeepEqual(prevContainer, containers) {
+				c <- containers
+				prevContainer = containers
+			}
+
+			time.Sleep(config.PollingInterval)
+		}
+	}
+}
+
 func ListContainers(w http.ResponseWriter, r *http.Request) {
 	sseParam := r.URL.Query().Get(config.SSEQueryParam)
 
+	// response JSON or SSE depending on the query params
 	if sseParam != config.SSEQueryKey {
-		// response JSON.
-		SetHTTPResHeaders(w)
-
 		containers := getContainers()
 		if err := json.NewEncoder(w).Encode(containers); err != nil {
 			log.Printf("Error encoding data: %v", err)
@@ -60,32 +81,11 @@ func ListContainers(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		// response SSE.
-		SetSSEHeaders(w)
+		setSSEHeaders(w)
 
 		c := make(chan []types.Container)
 
-		go func() {
-			defer close(c)
-
-			prevContainer := []types.Container{}
-
-			for {
-				select {
-				case <-r.Context().Done():
-					return
-				default:
-					containers := getContainers()
-
-					if !reflect.DeepEqual(prevContainer, containers) {
-						c <- containers
-						prevContainer = containers
-					}
-
-					time.Sleep(config.PollingInterval)
-				}
-			}
-		}()
+		go sseContainerUpdater(r.Context(), c)
 
 		for {
 			select {
