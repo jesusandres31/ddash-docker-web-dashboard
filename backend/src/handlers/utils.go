@@ -1,4 +1,4 @@
-package utils
+package handlers
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func SeHTTPResHeaders(w http.ResponseWriter) {
+func SetHTTPResHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 }
 

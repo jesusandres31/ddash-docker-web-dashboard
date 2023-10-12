@@ -17,7 +17,6 @@ func RegisterRoutes(r *mux.Router) {
 	// Register all your other routes here
 	s := r.PathPrefix("/api").Subrouter()
 
-	AuthRoutes(s)
 	UserRoutes(s)
 	ContainerRoutes(s)
 	ImageRoutes(s)

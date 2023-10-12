@@ -1,4 +1,4 @@
-package config
+package lib
 
 import (
 	"github.com/docker/docker/client"
@@ -7,6 +7,5 @@ import (
 
 var (
 	DockerCli *client.Client
-	BgCtx     context.Context
-	JWTKey    = []byte("your-secret-key")
+	Ctx       context.Context
 )

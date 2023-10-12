@@ -9,13 +9,12 @@ import (
 	"time"
 
 	"github.com/ddash/src/config"
-	"github.com/ddash/src/constant"
-	"github.com/ddash/src/utils"
+	"github.com/ddash/src/lib"
 	"github.com/docker/docker/api/types"
 )
 
 func getContainers() []types.Container {
-	containers, err := config.DockerCli.ContainerList(config.BgCtx, types.ContainerListOptions{All: true})
+	containers, err := lib.DockerCli.ContainerList(lib.Ctx, types.ContainerListOptions{All: false})
 	if err != nil {
 		log.Printf("Error getting list of containers: %v", err)
 		return nil
@@ -48,11 +47,11 @@ func getContainers() []types.Container {
 }
 
 func ListContainers(w http.ResponseWriter, r *http.Request) {
-	sseParam := r.URL.Query().Get(constant.SSEQueryParam)
+	sseParam := r.URL.Query().Get(config.SSEQueryParam)
 
-	if sseParam != constant.SSEQueryKey {
-		// response SSE.
-		utils.SeHTTPResHeaders(w)
+	if sseParam != config.SSEQueryKey {
+		// response JSON.
+		SetHTTPResHeaders(w)
 
 		containers := getContainers()
 		if err := json.NewEncoder(w).Encode(containers); err != nil {
@@ -61,24 +60,30 @@ func ListContainers(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		// response JSON.
-		utils.SetSSEHeaders(w)
+		// response SSE.
+		SetSSEHeaders(w)
 
 		c := make(chan []types.Container)
-		defer close(c)
 
 		go func() {
+			defer close(c)
+
 			prevContainer := []types.Container{}
 
 			for {
-				containers := getContainers()
+				select {
+				case <-r.Context().Done():
+					return
+				default:
+					containers := getContainers()
 
-				if !reflect.DeepEqual(prevContainer, containers) {
-					c <- containers
-					prevContainer = containers
+					if !reflect.DeepEqual(prevContainer, containers) {
+						c <- containers
+						prevContainer = containers
+					}
+
+					time.Sleep(config.PollingInterval)
 				}
-
-				time.Sleep(constant.PollingInterval)
 			}
 		}()
 

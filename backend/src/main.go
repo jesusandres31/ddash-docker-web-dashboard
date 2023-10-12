@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ddash/src/config"
 	"github.com/ddash/src/lib"
 	"github.com/ddash/src/routes"
 	"github.com/gorilla/mux"
@@ -19,11 +18,11 @@ import (
 
 func init() {
 	// init context background
-	config.BgCtx = context.Background()
+	lib.Ctx = context.Background()
 
 	// init docker client
 	var err error
-	config.DockerCli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	lib.DockerCli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		log.Fatal(err)
 		return

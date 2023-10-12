@@ -18,22 +18,24 @@ export default function Counter() {
     eventSource.onerror = (error) => {
       console.error('Error in SSE connection:', error);
     };
+
+    // clean
   }, []);
 
   return (
     <div>
       {containers.map((container) => (
         <div
-          key={container.id}
+          key={container.Id}
           style={{
             paddingBlock: '10px',
           }}
         >
-          <p>ID: {container.id}</p>
-          <p>Name: {container.names}</p>
-          <p>Image: {container.image}</p>
+          <p>ID: {container.Id}</p>
+          <p>Name: {container.Names}</p>
+          <p>Image: {container.Image}</p>
           <p>Status: {container.Status}</p>
-          <p>State: {container.state}</p>
+          <p>State: {container.State}</p>
         </div>
       ))}
     </div>
