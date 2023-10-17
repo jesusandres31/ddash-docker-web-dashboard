@@ -14,6 +14,12 @@ import (
 	"github.com/docker/docker/api/types"
 )
 
+func setSSEHeaders(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+}
+
 func getContainers() []types.Container {
 	containers, err := lib.DockerCli.ContainerList(lib.Ctx, types.ContainerListOptions{All: false})
 	if err != nil {
