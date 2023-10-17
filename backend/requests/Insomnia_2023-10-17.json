@@ -1,7 +1,7 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-10-12T18:56:10.131Z",
+  "__export_date": "2023-10-17T20:37:42.231Z",
   "__export_source": "insomnia.desktop.app:v2023.5.8",
   "resources": [
     {
@@ -395,20 +395,15 @@
     {
       "_id": "req_34d9d215e0d14647892e727461d73d62",
       "parentId": "fld_a0c8c24ac45d4f948ad7d41c5b9d0449",
-      "modified": 1697136950765,
+      "modified": 1697568457552,
       "created": 1697134944928,
       "url": " http://localhost:8000/api/user",
-      "name": "user",
+      "name": "all users",
       "description": "",
       "method": "GET",
-      "body": { "mimeType": "application/json", "text": "" },
+      "body": {},
       "parameters": [],
       "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json",
-          "id": "pair_311f9ab027d449f0876581a3a507a371"
-        },
         {
           "name": "User-Agent",
           "value": "insomnia/2023.5.8",
@@ -439,9 +434,38 @@
       "_type": "request_group"
     },
     {
+      "_id": "req_41247f37aca74c7e8108ab4bc7e48841",
+      "parentId": "fld_a0c8c24ac45d4f948ad7d41c5b9d0449",
+      "modified": 1697568455085,
+      "created": 1697567786231,
+      "url": " http://localhost:8000/api/user/1",
+      "name": "one user",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/2023.5.8",
+          "id": "pair_882f2d62cb8946098bc2457e90d8d4ef"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697134893224.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
       "_id": "req_6d7b908a189b4c9eb08a07d4e3ae2050",
       "parentId": "fld_a0c8c24ac45d4f948ad7d41c5b9d0449",
-      "modified": 1697136953558,
+      "modified": 1697568005533,
       "created": 1697134964063,
       "url": " http://localhost:8000/api/user",
       "name": "user",
@@ -449,7 +473,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"Name\": \"John Doe\", \n  \"Email\": \"john2@gmail.com\"\n}"
+        "text": "{\n  \"Name\": \"Lio Messi\", \n  \"Email\": \"lio@gmail.com\"\n}"
       },
       "parameters": [],
       "headers": [
@@ -478,15 +502,15 @@
     {
       "_id": "req_057f309db10841d0b80a4735f129a7c9",
       "parentId": "fld_a0c8c24ac45d4f948ad7d41c5b9d0449",
-      "modified": 1697136956174,
+      "modified": 1697568313838,
       "created": 1697134981021,
-      "url": " http://localhost:8000/api/user/1",
+      "url": " http://localhost:8000/api/user/3",
       "name": "user",
       "description": "",
       "method": "PUT",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"Name\": \"John Doe2\", \n  \"Email\": \"john2@gmail.com\"\n}"
+        "text": "{\n  \"Name\": \"Leonel Messi\", \n  \"Email\": \"messi@gmail.com\"\n}"
       },
       "parameters": [],
       "headers": [
@@ -515,23 +539,15 @@
     {
       "_id": "req_0f8dfffbb96c4bbb94c54e6f03e1a3ad",
       "parentId": "fld_a0c8c24ac45d4f948ad7d41c5b9d0449",
-      "modified": 1697136959111,
+      "modified": 1697568449848,
       "created": 1697134998441,
-      "url": " http://localhost:8000/api/user/1",
+      "url": " http://localhost:8000/api/user/3",
       "name": "user",
       "description": "",
       "method": "DELETE",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"Name\": \"John Doe2\", \n  \"Email\": \"john2@gmail.com\"\n}"
-      },
+      "body": {},
       "parameters": [],
       "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json",
-          "id": "pair_311f9ab027d449f0876581a3a507a371"
-        },
         {
           "name": "User-Agent",
           "value": "insomnia/2023.5.8",
