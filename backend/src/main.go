@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ddash/src/config"
 	"github.com/ddash/src/lib"
 	"github.com/ddash/src/routes"
 	"github.com/gorilla/mux"
@@ -36,9 +37,14 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// db
+	// init configurations
+	config.InitDB()
+	config.InitAuth()
+
+	// init db and data
 	lib.DBConnection()
 	lib.DBMigrations()
+	lib.CreateAdminUser()
 
 	// router
 	r := mux.NewRouter()

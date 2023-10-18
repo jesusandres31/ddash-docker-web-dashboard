@@ -8,7 +8,7 @@ import (
 )
 
 func ListNetworks(w http.ResponseWriter, r *http.Request) {
-	handleRes(w, r, func() (interface{}, error) {
+	execAndRespond(w, r, func() (interface{}, error) {
 		return lib.DockerCli.NetworkList(lib.Ctx, types.NetworkListOptions{})
 	})
 }

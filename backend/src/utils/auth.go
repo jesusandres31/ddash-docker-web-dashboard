@@ -5,6 +5,7 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/pbkdf2"
 )
 
@@ -22,4 +23,25 @@ func EncryptPassword(password string) (salt string, hash string, err error) {
 	hash = hex.EncodeToString(hashBytes)
 
 	return
+}
+
+// ValidatePassword validates a password against the given salt and hash.
+func ValidatePassword(password string, salt string, hash string) bool {
+	// Decode the salt from the hexadecimal string
+	saltBytes, err := hex.DecodeString(salt)
+	if err != nil {
+		return false
+	}
+
+	// Calculate the hash using PBKDF2
+	calculatedHashBytes := pbkdf2.Key([]byte(password), saltBytes, 10000, 512, sha512.New)
+	calculatedHash := hex.EncodeToString(calculatedHashBytes)
+
+	// Compare the calculated hash to the provided hash
+	return calculatedHash == hash
+}
+
+// GenerateUUID generates a new UUID.
+func GenerateUUID() uuid.UUID {
+	return uuid.New()
 }

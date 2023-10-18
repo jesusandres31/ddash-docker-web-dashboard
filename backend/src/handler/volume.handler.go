@@ -10,7 +10,7 @@ import (
 func ListVolumes(w http.ResponseWriter, r *http.Request) {
 	listOptions := volume.ListOptions{}
 
-	handleRes(w, r, func() (interface{}, error) {
+	execAndRespond(w, r, func() (interface{}, error) {
 		return lib.DockerCli.VolumeList(lib.Ctx, listOptions)
 	})
 }

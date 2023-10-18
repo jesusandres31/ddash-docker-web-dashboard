@@ -23,11 +23,11 @@ func respondError(w http.ResponseWriter, code int, message string) {
 	respondJSON(w, code, map[string]string{"error": message})
 }
 
-// handleRes is a utility function that processes a request and sends an HTTP response.
+// execAndRespond is a utility function that execute a function, processes a request and sends an HTTP response.
 // It takes an http.ResponseWriter, an http.Request, and a function that returns data and an error.
 // If the function executes successfully, it responds with a JSON payload and an HTTP 200 (OK) status code.
 // If the function returns an error, it responds with a JSON error payload and an HTTP 400 (Bad Request) status code.
-func handleRes(w http.ResponseWriter, r *http.Request, fn func() (interface{}, error)) {
+func execAndRespond(w http.ResponseWriter, r *http.Request, fn func() (interface{}, error)) {
 	data, err := fn()
 	if err != nil {
 		respondError(w, http.StatusBadRequest, err.Error())

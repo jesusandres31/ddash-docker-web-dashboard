@@ -8,7 +8,7 @@ import (
 )
 
 func ListImages(w http.ResponseWriter, r *http.Request) {
-	handleRes(w, r, func() (interface{}, error) {
+	execAndRespond(w, r, func() (interface{}, error) {
 		return lib.DockerCli.ImageList(lib.Ctx, types.ImageListOptions{})
 	})
 }
