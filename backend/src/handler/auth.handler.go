@@ -29,9 +29,11 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rejectMsg := "Incorrect username or password."
+
 	user := getUserByEmail(request.Email)
 	if user == nil {
-		respondError(w, http.StatusBadRequest, "Usuario o contraseña incorrectos.")
+		respondError(w, http.StatusBadRequest, rejectMsg)
 		return
 	}
 
@@ -39,7 +41,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 
 	isMatch := utils.ValidatePassword(request.Password, user.Salt, user.Hash)
 	if !isMatch {
-		respondError(w, http.StatusBadRequest, "Usuario o contraseña incorrectos.")
+		respondError(w, http.StatusBadRequest, rejectMsg)
 		return
 	}
 
