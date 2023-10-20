@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/ddash/src/lib"
@@ -20,7 +21,7 @@ type SignInResponse struct {
 	Name        string `json:"name"`
 }
 
-func SignInHandler(w http.ResponseWriter, r *http.Request) {
+func SignIn(w http.ResponseWriter, r *http.Request) {
 	var request SignInRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -34,11 +35,15 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Print(user)
+
 	isMatch := utils.ValidatePassword(request.Password, user.Salt, user.Hash)
 	if !isMatch {
 		respondError(w, http.StatusBadRequest, "Usuario o contraseña incorrectos.")
 		return
 	}
+
+	fmt.Print(isMatch)
 
 	/* accessToken, err := createAccessToken(user.UUID, role)
 	if err != nil {
