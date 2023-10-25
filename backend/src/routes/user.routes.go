@@ -1,14 +1,18 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/ddash/src/handler"
+	"github.com/ddash/src/middleware"
 	"github.com/gorilla/mux"
 )
 
 func UserRoutes(r *mux.Router) {
-	r.HandleFunc("/user", handler.GetUsers).Methods("GET")
-	r.HandleFunc("/user/{email}", handler.GetUser).Methods("GET")
-	r.HandleFunc("/user", handler.CreateUser).Methods("POST")
-	r.HandleFunc("/user/{email}", handler.UpdateUser).Methods("PUT")
-	r.HandleFunc("/user/{email}", handler.DeleteUser).Methods("DELETE")
+	s := r.PathPrefix("/user").Subrouter()
+	s.Handle("", middleware.AuthMiddleware(http.HandlerFunc(handler.GetUsers))).Methods("GET")
+	s.Handle("", middleware.AuthMiddleware(http.HandlerFunc(handler.CreateUser))).Methods("POST")
+	s.Handle("/{email}", middleware.AuthMiddleware(http.HandlerFunc(handler.GetUser))).Methods("GET")
+	s.Handle("/{email}", middleware.AuthMiddleware(http.HandlerFunc(handler.UpdateUser))).Methods("PUT")
+	s.Handle("/{email}", middleware.AuthMiddleware(http.HandlerFunc(handler.DeleteUser))).Methods("DELETE")
 }

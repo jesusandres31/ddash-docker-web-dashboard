@@ -5,7 +5,6 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 
-	"github.com/google/uuid"
 	"golang.org/x/crypto/pbkdf2"
 )
 
@@ -39,9 +38,4 @@ func ValidatePassword(password string, salt string, hash string) bool {
 
 	// Compare the calculated hash to the provided hash
 	return calculatedHash == hash
-}
-
-// GenerateUUID generates a new UUID.
-func GenerateUUID() uuid.UUID {
-	return uuid.New()
 }
