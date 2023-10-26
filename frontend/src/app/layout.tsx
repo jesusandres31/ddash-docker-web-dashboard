@@ -1,6 +1,10 @@
-import './globals.css';
+'use client';
+import { ThemeProvider } from '@mui/material';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import theme from '@/theme/theme';
+import './globals.css';
+import '@fontsource/roboto/400.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,7 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <ThemeProvider theme={theme}>
+        <body className={inter.className}>{children}</body>
+      </ThemeProvider>
     </html>
   );
 }

@@ -6,24 +6,22 @@ export default function Counter() {
   const [containers, setContainers] = useState<any[]>([]);
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      'http://localhost:8000/api/container?sse=true'
-    );
-
-    eventSource.onmessage = (event) => {
-      const eventData = JSON.parse(event.data);
-      setContainers(eventData);
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('Error in SSE connection:', error);
-    };
-
+    // const eventSource = new EventSource(
+    //   'http://localhost:8000/api/container?sse=true'
+    // );
+    // eventSource.onmessage = (event) => {
+    //   const eventData = JSON.parse(event.data);
+    //   setContainers(eventData);
+    // };
+    // eventSource.onerror = (error) => {
+    //   console.error('Error in SSE connection:', error);
+    // };
     // clean
   }, []);
 
   return (
     <div>
+      Containers
       {containers.map((container) => (
         <div
           key={container.Id}
