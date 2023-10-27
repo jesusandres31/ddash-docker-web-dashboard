@@ -1,0 +1,2 @@
+// validations
+export const VLDN = {};
