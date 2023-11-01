@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { URL } from "../../config";
+import { URL, config } from "src/config";
+import { getAccessToken } from "../auth";
 
 export const ApiTag = {
+  Auth: "Auth",
   Container: "Container",
   Image: "Image",
   Network: "Network",
@@ -10,13 +12,13 @@ export const ApiTag = {
 
 const baseQuery = fetchBaseQuery({
   baseUrl: URL.API,
-  //   prepareHeaders: (headers, { getState }) => {
-  //     const apiKey = (getState() as RootState).auth.apiKey;
-  //     if (apiKey) {
-  //       headers.set(conf.API_KEY_HEADER, `${apiKey}`);
-  //     }
-  //     return headers;
-  //   },
+  prepareHeaders: (headers) => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.set(config.AUTH_HEADER, `${config.BEARER} ${accessToken}`);
+    }
+    return headers;
+  },
 });
 
 export const mainApi = createApi({

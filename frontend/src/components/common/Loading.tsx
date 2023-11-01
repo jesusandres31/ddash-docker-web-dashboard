@@ -1,5 +1,5 @@
 import { Grid, useTheme, Typography, Box } from "@mui/material";
-import { useIsMobile } from "../../hooks";
+import { useIsMobile } from "src/hooks";
 
 const Loading = ({
   top = true,

@@ -1,5 +1,5 @@
 export interface ContainerInfo {
-  ID: string;
+  Id: string;
   Names: string[];
   Image: string;
   ImageID: string;

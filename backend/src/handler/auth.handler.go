@@ -19,7 +19,7 @@ type SignInResponse struct {
 	UUID         string `json:"uuid"`
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
-	Name         string `json:"name"`
+	Email        string `json:"email"`
 }
 
 type RefreshTokenRequest struct {
@@ -77,7 +77,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 		UUID:         user.UUID.String(),
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		Name:         user.Name,
+		Email:        user.Email,
 	}
 
 	respondJSON(w, http.StatusOK, response)

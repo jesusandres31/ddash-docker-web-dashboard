@@ -1,5 +1,4 @@
 import { Typography, Grid, Link, Container, CssBaseline } from "@mui/material";
-import { URL } from "../../config";
 
 export default function NotFound(): JSX.Element {
   return (
@@ -12,8 +11,7 @@ export default function NotFound(): JSX.Element {
         alignItems="center"
         sx={{ pt: 20 }}
       >
-        <Grid item xs={12} sm={12} sx={{ pt: 5 }}></Grid>
-        <Grid item xs={12} sm={12} sx={{ py: 0 }}>
+        <Grid item xs={12} sm={12} sx={{ py: 0, pt: 5 }}>
           <Grid container direction="row" justifyContent="center">
             <Typography variant="h3" align="center">
               Unauthorized!
@@ -22,7 +20,7 @@ export default function NotFound(): JSX.Element {
         </Grid>
         <Grid item xs={12} sm={12} sx={{ py: 5 }}>
           <Grid container direction="row" justifyContent="center">
-            <Link color="inherit" href={`${URL.APP}`}>
+            <Link color="inherit" href="/">
               Log in to continue using this app.
             </Link>
           </Grid>

@@ -1,7 +1,7 @@
 import { configureStore, ConfigureStoreOptions } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { mainApi } from "./services/api";
-import { uiReducer } from "../slices";
+import { uiReducer } from "src/slices";
 
 export const createStore = (
   options?: ConfigureStoreOptions["preloadedState"] | undefined

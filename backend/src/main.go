@@ -51,7 +51,7 @@ func main() {
 	routes.RegisterRoutes(r)
 
 	// CORS middleware
-	c := cors.Default().Handler(r)
+	c := cors.AllowAll().Handler(r)
 
 	// server
 	port := os.Getenv("PORT")

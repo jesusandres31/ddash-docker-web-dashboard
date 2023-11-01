@@ -1,43 +1,55 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { NotFound, SignIn, Unauthorized } from "../pages";
-import { GlobalSnackbar, MainLoading } from "../components/common";
-import { useAuth } from "../hooks";
-import { AppRoutes, config } from "../config";
+import { NotFound, SignIn, Unauthorized } from "src/pages";
+import {
+  Dashboard,
+  GlobalSnackbar,
+  MainLoading,
+  ProtectedRoute,
+} from "src/components/common";
+import { AppRoutes, config } from "src/config";
+import { useAuth } from "src/hooks";
 
 const Containers = lazy(() =>
-  import("../pages").then((module) => ({
+  import("src/pages").then((module) => ({
     default: module.Containers,
   }))
 );
 
 function App(): JSX.Element {
-  /* const { handleCheckAuth } = useAuth();
-
-  useEffect(() => {
-    handleCheckAuth(); 
-  }, []); */
+  const { isLoggedIn } = useAuth();
 
   return (
     <React.Fragment>
       <Suspense fallback={<MainLoading />}>
         <Routes>
-          <Route path="/" element={<Navigate to={AppRoutes.Login} />} />
-          <Route path={AppRoutes.Login} element={<SignIn />} />
-          <Route path={AppRoutes.Unauthorized} element={<Unauthorized />} />
+          {/* login routes */}
+          <Route
+            path={AppRoutes.Index}
+            element={<Navigate to={AppRoutes.Login} />}
+          />
           <Route
             path={AppRoutes.Login}
-            element={<Navigate to={config.LANDING_PAGE} />}
+            element={
+              isLoggedIn ? <Navigate to={config.LANDING_PAGE} /> : <SignIn />
+            }
           />
-          <Route path={AppRoutes.Containers} element={<Containers />} />
-          {/* <Route path={ACTIVITY_ROUTE} element={<AllActivity />} />
-          <Route
-            path={`${INVENTORY_ROUTE}/:inventoryId${SHELF_ROUTE}`}
-            element={<InventoryDetails />}
-          />
-          <Route path={BAR_ROUTE} element={<BarsView />} />
-          <Route path={BAR_ALL_ROUTE} element={<AllProductsView />} /> */}
-          <Route path="*" element={<NotFound />} />
+
+          {/* protected routes */}
+          <Route path={AppRoutes.Index} element={<Dashboard />}>
+            <Route
+              path={AppRoutes.Containers}
+              element={
+                <ProtectedRoute>
+                  <Containers />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
+          {/* error routes */}
+          <Route path={AppRoutes.Unauthorized} element={<Unauthorized />} />
+          <Route path={AppRoutes.Wildcard} element={<NotFound />} />
         </Routes>
       </Suspense>
       <GlobalSnackbar />

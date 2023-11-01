@@ -1,46 +1,64 @@
-"use client";
-import * as React from "react";
 import { LockOutlined } from "@mui/icons-material";
 import {
   Avatar,
-  Button,
   CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
   Link,
-  Grid,
   Box,
   Typography,
   Container,
 } from "@mui/material";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { URL } from "src/config";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { SignInReq } from "src/interfaces";
+import { MSG, VLDN } from "src/constants";
+import { removeSpace } from "src/utils";
+import { setSnackbar } from "src/slices/uiSlice";
+import { useAppDispatch } from "src/app/store";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { useAuth } from "src/hooks";
 
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const dispatch = useAppDispatch();
+  const { handleSignIn, isSigningIn } = useAuth();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      remember: true,
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email(MSG.invalidEmail)
+        .required(MSG.required)
+        .min(VLDN.EMAIL.min, MSG.minLength(VLDN.EMAIL.min))
+        .max(VLDN.EMAIL.max, MSG.maxLength(VLDN.EMAIL.max)),
+      password: Yup.string()
+        .required(MSG.required)
+        .min(VLDN.PSSWD.min, MSG.minLength(VLDN.PSSWD.min))
+        .max(VLDN.PSSWD.max, MSG.maxLength(VLDN.PSSWD.max)),
+    }),
+    onSubmit: async (data: SignInReq) => {
+      try {
+        handleSignIn(data);
+        // dispatch(setSnackbar({ message: "Login success" }));
+        formik.setValues(formik.initialValues);
+        handleResetError();
+      } catch (err: any) {
+        dispatch(setSnackbar({ message: err.data.error, type: "error" }));
+      }
+    },
+    validateOnChange: false,
+    validateOnBlur: false,
+    enableReinitialize: true,
+  });
+
+  const handleResetError = () => {
+    formik.setErrors({});
   };
 
   return (
@@ -60,54 +78,88 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email"
             name="email"
             autoComplete="email"
             autoFocus
+            value={formik.values.email}
+            onChange={(e) => {
+              formik.setFieldValue("email", removeSpace(e.target.value));
+              handleResetError();
+            }}
+            error={!!formik.errors.email}
+            helperText={formik.errors.email ? formik.errors.email : " "}
+            variant="outlined"
+            inputProps={{
+              max: VLDN.EMAIL.max,
+              min: VLDN.EMAIL.min,
+            }}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
-            label="Password"
-            type="password"
             id="password"
+            label="Password"
+            name="password"
+            type="password"
             autoComplete="current-password"
+            value={formik.values.password}
+            onChange={(e) => {
+              formik.setFieldValue("password", removeSpace(e.target.value));
+              handleResetError();
+            }}
+            error={!!formik.errors.password}
+            helperText={formik.errors.password ? formik.errors.password : " "}
+            variant="outlined"
+            inputProps={{
+              max: VLDN.PSSWD.max,
+              min: VLDN.PSSWD.min,
+            }}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={
+              <Checkbox
+                value="remember"
+                color="primary"
+                checked={formik.values.remember}
+                onChange={() => {
+                  formik.setFieldValue("remember", !formik.values.remember);
+                  handleResetError();
+                }}
+              />
+            }
             label="Remember me"
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            loading={isSigningIn}
           >
             Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+          </LoadingButton>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
+      <Box sx={{ mt: 8, mb: 4 }}>
+        <Typography variant="body2" color="text.secondary" align="center">
+          <Link color="inherit" href={URL.REPO} target="_blank">
+            Documentation
+          </Link>
+        </Typography>
+      </Box>
     </Container>
   );
 }

@@ -1,11 +1,18 @@
 // envs
 export const URL = {
-  API: `${import.meta.env.API_URL}`,
-  APP: `${import.meta.env.MAIN_APP_URL}`,
+  SERVER: `${import.meta.env.VITE_SERVER_URL}`,
+  API: `${import.meta.env.VITE_SERVER_URL}/api`,
+  REPO: `${import.meta.env.REPO_URL}`,
+};
+
+// app keys
+export const key = {
+  ACCESS_TOKEN: "accessToken",
 };
 
 // application routing
 export enum AppRoutes {
+  Wildcard = "*",
   Index = "/",
   Login = "/login",
   Logout = "/logout",
@@ -19,4 +26,6 @@ export enum AppRoutes {
 // general config
 export const config = {
   LANDING_PAGE: AppRoutes.Containers,
+  AUTH_HEADER: "Authorization",
+  BEARER: "Bearer",
 };

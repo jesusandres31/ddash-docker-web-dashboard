@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
+import {
+  useGetContainersStremQuery,
+  useGetContainersQuery,
+} from "src/app/services/containerService";
+import { useAuth } from "src/hooks";
 
 export default function Containers() {
-  const [containers, setContainers] = useState<any[]>([]);
+  /* const [containers, setContainers] = useState<any[]>([]); */
+
+  const { data: containers } = useGetContainersQuery();
 
   useEffect(() => {
     // const eventSource = new EventSource(
@@ -17,23 +24,36 @@ export default function Containers() {
     // clean
   }, []);
 
+  const { handleSignOut } = useAuth();
+
   return (
     <div>
-      Containers
-      {containers.map((container) => (
-        <div
-          key={container.Id}
-          style={{
-            paddingBlock: "10px",
+      <>
+        <button
+          onClick={() => {
+            handleSignOut();
           }}
         >
-          <p>ID: {container.Id}</p>
-          <p>Name: {container.Names}</p>
-          <p>Image: {container.Image}</p>
-          <p>Status: {container.Status}</p>
-          <p>State: {container.State}</p>
-        </div>
-      ))}
+          Logout
+        </button>
+      </>
+      Containers
+      {containers
+        ? containers.map((container) => (
+            <div
+              key={container.Id}
+              style={{
+                paddingBlock: "10px",
+              }}
+            >
+              <p>ID: {container.Id}</p>
+              <p>Name: {container.Names}</p>
+              <p>Image: {container.Image}</p>
+              <p>Status: {container.Status}</p>
+              <p>State: {container.State}</p>
+            </div>
+          ))
+        : null}
     </div>
   );
 }

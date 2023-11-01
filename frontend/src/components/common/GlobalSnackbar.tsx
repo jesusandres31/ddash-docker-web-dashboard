@@ -1,23 +1,22 @@
 import React from "react";
 import { Alert, Snackbar } from "@mui/material";
-/* import { useSnackbar } from "context/SnackbarContext"; */
+import { resetSnackbar, useUISelector } from "src/slices/uiSlice";
+import { useAppDispatch } from "src/app/store";
 
 export default function GlobalSnackbar() {
-  /* const {
-    state: { open, message, type },
-    dispatch: { resetSnackbar },
-  } = useSnackbar();
- */
+  const dispatch = useAppDispatch();
+  const { snackbar } = useUISelector((state) => state.ui);
+
   const handleClose = (e: React.SyntheticEvent | Event, reason?: string) => {
-    /* if (reason === "clickaway") {
+    if (reason === "clickaway") {
       return;
     }
-    resetSnackbar(type); */
+    dispatch(resetSnackbar());
   };
 
   return (
     <Snackbar
-      open={/* open */ false}
+      open={snackbar.open}
       autoHideDuration={2500}
       onClose={handleClose}
       anchorOrigin={{
@@ -25,16 +24,14 @@ export default function GlobalSnackbar() {
         horizontal: "center",
       }}
     >
-      <>
-        {/* <Alert
+      <Alert
         onClose={handleClose}
-        severity={type}
+        severity={snackbar.type}
         variant="filled"
         sx={{ width: "100%" }}
       >
-        {message}
-      </Alert> */}
-      </>
+        {snackbar.message}
+      </Alert>
     </Snackbar>
   );
 }
