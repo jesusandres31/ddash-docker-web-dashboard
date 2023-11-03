@@ -23,7 +23,6 @@ export default function Containers() {
   const { handleSignOut } = useAuth();
   const { data: containers } = useGetContainersStremQuery();
 
-  console.log("front ", containers);
   return (
     <div>
       <>
@@ -36,8 +35,8 @@ export default function Containers() {
         </button>
       </>
       Containers
-      {containers && containers.length > 0
-        ? containers.map((container) => (
+      {containers
+        ? Object.values(containers).map((container) => (
             <div
               key={container.Id}
               style={{

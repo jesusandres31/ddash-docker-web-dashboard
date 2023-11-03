@@ -49,17 +49,18 @@ export const containerApi = mainApi.injectEndpoints({
         await cacheEntryRemoved;
         // perform cleanup steps once the `cacheEntryRemoved` promise resolves
       },
-      transformResponse: (response: StremRes<ContainerInfo>[]) => {
-        if (response) return Object.values(response);
-      },
+      /* transformResponse: (response: StremRes<ContainerInfo>[]) => {
+        if (response) return transformCont(response)  
+      }, */
       providesTags: [ApiTag.Container],
     }),
   }),
 });
 
-function transformCont(data: StremRes<ContainerInfo>[]): ContainerInfo[] {
-  return Object.values(data);
-}
+/* function transformCont(data: StremRes<ContainerInfo>[]): ContainerInfo[] {
+  const res: ContainerInfo[] = (Object.values(data) as any as ContainerInfo[]);
+  return res
+} */
 
 export const { useGetContainersQuery, useGetContainersStremQuery } =
   containerApi;
