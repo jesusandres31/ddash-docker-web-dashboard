@@ -2,6 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { URL, config } from "src/config";
 import { getAccessToken } from "../auth";
 
+/**
+ * API definition
+ */
 export const ApiTag = {
   Auth: "Auth",
   Container: "Container",
@@ -27,3 +30,14 @@ export const mainApi = createApi({
   endpoints: () => ({}),
   keepUnusedDataFor: 30,
 });
+
+/**
+ * utils
+ */
+export const SSE_URL = {
+  containers: `${URL.API}/container?sse=true`,
+};
+
+export const createSseUrlRequest = (url: string, token: string | null) => {
+  return `${url}&${config.AUTH_HEADER}=${config.BEARER} ${token ?? ""}`;
+};

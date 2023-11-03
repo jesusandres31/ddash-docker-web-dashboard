@@ -7,6 +7,8 @@ var (
 	DefaultUserEmail string
 	DefaultUserName  string
 	JWTSecret        string
+	BearerKey        string
+	AuthHeaderKey    string
 )
 
 func InitAuth() {
@@ -14,4 +16,6 @@ func InitAuth() {
 	DefaultPsswd = os.Getenv("DEFAULT_PSSWD")
 	DefaultUserEmail = os.Getenv("DEFAULT_USER_EMAIL")
 	DefaultUserName = "admin"
+	BearerKey = "Bearer"
+	AuthHeaderKey = "Authorization"
 }
