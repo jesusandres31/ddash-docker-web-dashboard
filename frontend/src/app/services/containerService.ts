@@ -1,11 +1,7 @@
-import { ContainerInfo } from "src/interfaces";
+import { ContainerInfo, StremRes } from "src/interfaces";
 import { ApiTag, SSE_URL, createSseUrlRequest, mainApi } from "./api";
 import { MSG } from "src/constants";
 import { getAccessToken } from "src/utils/auth";
-
-interface StremRes<T> {
-  [key: string]: T;
-}
 
 export const containerApi = mainApi.injectEndpoints({
   endpoints: (build) => ({
@@ -13,9 +9,8 @@ export const containerApi = mainApi.injectEndpoints({
       query: () => `container`,
       providesTags: [ApiTag.Container],
     }),
-    getContainersStrem: build.query<ContainerInfo[], void>({
+    getContainersStrem: build.query<StremRes<ContainerInfo>, void>({
       queryFn: () => ({ data: {} as any }),
-      /* query: () => `container?sse=true`, */
       async onCacheEntryAdded(
         arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
@@ -30,12 +25,12 @@ export const containerApi = mainApi.injectEndpoints({
           // when data is received from the eventSource connection to the server,
           // update our query result with the received message
           eventSource.onmessage = (event) => {
-            const eventData = JSON.parse(event.data);
+            const eventData: ContainerInfo[] = JSON.parse(event.data);
             updateCachedData((draft) => {
-              if (eventData && draft) {
-                // draft.push(eventData);
-                Object.assign(draft, eventData);
-              }
+              // empty the existing data
+              Object.keys(draft).forEach((key) => delete draft[key]);
+              // assign new data
+              Object.assign(draft, eventData);
             });
           };
           eventSource.onerror = (error) => {
@@ -49,18 +44,10 @@ export const containerApi = mainApi.injectEndpoints({
         await cacheEntryRemoved;
         // perform cleanup steps once the `cacheEntryRemoved` promise resolves
       },
-      /* transformResponse: (response: StremRes<ContainerInfo>[]) => {
-        if (response) return transformCont(response)  
-      }, */
       providesTags: [ApiTag.Container],
     }),
   }),
 });
-
-/* function transformCont(data: StremRes<ContainerInfo>[]): ContainerInfo[] {
-  const res: ContainerInfo[] = (Object.values(data) as any as ContainerInfo[]);
-  return res
-} */
 
 export const { useGetContainersQuery, useGetContainersStremQuery } =
   containerApi;
