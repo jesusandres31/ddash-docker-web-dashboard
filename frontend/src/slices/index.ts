@@ -1,1 +1,1 @@
-export { default as uiReducer } from "./uiSlice";
+export { default as uiReducer } from "./ui/uiSlice";

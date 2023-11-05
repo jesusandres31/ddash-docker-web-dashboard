@@ -5,6 +5,8 @@ export interface AuthUser {
   name: string;
 }
 
+export type RefreshTokenRes = Pick<AuthUser, "accessToken">;
+
 export interface SignInReq {
   email: string;
   password: string;

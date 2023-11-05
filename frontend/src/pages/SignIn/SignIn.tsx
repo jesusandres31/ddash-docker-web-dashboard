@@ -16,7 +16,7 @@ import * as Yup from "yup";
 import { SignInReq } from "src/interfaces";
 import { MSG, VLDN } from "src/constants";
 import { removeSpace } from "src/utils";
-import { setSnackbar } from "src/slices/uiSlice";
+import { setSnackbar } from "src/slices/ui/uiSlice";
 import { useAppDispatch } from "src/app/store";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useAuth } from "src/hooks";

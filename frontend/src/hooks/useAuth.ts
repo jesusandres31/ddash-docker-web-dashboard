@@ -19,6 +19,10 @@ export const useAuth = () => {
     navigate(AppRoutes.Login);
   };
 
+  const handleRefresh = async (token: string) => {
+    console.log(token);
+  };
+
   const isLoggedIn = !!getAccessToken();
 
   return {

@@ -11,5 +11,5 @@ import (
 func AuthRoutes(r *mux.Router) {
 	s := r.PathPrefix("/auth").Subrouter()
 	s.Handle("/signin", http.HandlerFunc(handler.SignIn)).Methods("POST")
-	s.Handle("/refresh", middleware.AuthMiddleware(http.HandlerFunc(handler.RefreshToken))).Methods("POST")
+	s.Handle("/refresh", middleware.AuthMiddleware(http.HandlerFunc(handler.RefreshToken))).Methods("GET")
 }

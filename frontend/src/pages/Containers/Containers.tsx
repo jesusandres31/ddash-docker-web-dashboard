@@ -1,9 +1,11 @@
+import { useGetContainersQuery } from "src/app/services/containerService";
 import { useAuth } from "src/hooks";
 import { useSseData } from "src/hooks/useSseData";
 
 export default function Containers() {
   const { handleSignOut } = useAuth();
-  const { containers } = useSseData();
+  const { data: containers } = useGetContainersQuery();
+  /* const { containers } = useSseData(); */
 
   return (
     <div>
@@ -17,7 +19,7 @@ export default function Containers() {
         </button>
       </>
       Containers
-      {containers.length > 0
+      {containers && containers.length > 0
         ? containers.map((container, index) => (
             <div
               key={`${container.Id}-${index}`}

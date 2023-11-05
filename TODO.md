@@ -1,5 +1,4 @@
 global error handler to refresh token
-
-signup if token invalid
+signout if token invalid
 
 dind

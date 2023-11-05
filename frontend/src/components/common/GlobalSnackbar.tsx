@@ -1,6 +1,6 @@
 import React from "react";
 import { Alert, Snackbar } from "@mui/material";
-import { resetSnackbar, useUISelector } from "src/slices/uiSlice";
+import { resetSnackbar, useUISelector } from "src/slices/ui/uiSlice";
 import { useAppDispatch } from "src/app/store";
 
 export default function GlobalSnackbar() {

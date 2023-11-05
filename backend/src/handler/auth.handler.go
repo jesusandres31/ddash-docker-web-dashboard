@@ -2,9 +2,12 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
+	"github.com/ddash/src/config"
 	"github.com/ddash/src/lib"
 	"github.com/ddash/src/model"
 	"github.com/ddash/src/utils"
@@ -20,10 +23,6 @@ type SignInResponse struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
 	Email        string `json:"email"`
-}
-
-type RefreshTokenRequest struct {
-	RefreshToken string `json:"refreshToken"`
 }
 
 type RefreshTokenResponse struct {
@@ -85,28 +84,35 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 
 // RefreshToken
 func RefreshToken(w http.ResponseWriter, r *http.Request) {
-	var request RefreshTokenRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, "Invalid request payload")
+	// Get the refresh token from the HTTP header
+	token := r.Header.Get(config.AuthHeaderKey)
+	if token == "" {
+		respondError(w, http.StatusUnauthorized, "Refresh token missing in the header")
 		return
 	}
 
-	// validate "refresh token"
-	claims, err := utils.ValidateRefreshToken(request.RefreshToken)
+	// Clean the refresh token if it contains the "Bearer " prefix
+	token = strings.TrimPrefix(token, config.BearerKey)
+
+	// Remove extra spaces
+	tokenString := strings.ReplaceAll(token, " ", "")
+	fmt.Print(tokenString)
+
+	// Validate the refresh token
+	claims, err := utils.ValidateRefreshToken(tokenString)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Invalid refresh token")
 		return
 	}
 
-	// verify if "refresh token" expired
+	// Check if the refresh token has expired
 	exp, ok := claims["exp"].(float64)
 	if !ok || int64(exp) < time.Now().Unix() {
 		respondError(w, http.StatusUnauthorized, "Refresh token has expired")
 		return
 	}
 
-	// if "refresh token" is valid, create a new access token
+	// If the refresh token is valid, create a new access token
 	accessToken, err := utils.CreateAccessToken(claims["sub"].(string), false)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Failed to create access token")

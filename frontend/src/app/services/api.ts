@@ -1,6 +1,13 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 import { URL, config } from "src/config";
 import { getAccessToken } from "../auth";
+import { useAuth } from "src/hooks";
 
 /**
  * API definition
@@ -24,8 +31,36 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const { handleSignOut } = useAuth();
+  let result = await baseQuery(args, api, extraOptions);
+  console.log(result);
+  if (
+    result.error &&
+    result.error.status === "PARSING_ERROR" &&
+    result.error.originalStatus === 401
+  ) {
+    // try to get a new token
+    const refreshResult = await baseQuery(URL.REFRESH, api, extraOptions);
+    console.log(refreshResult);
+    if (refreshResult.data) {
+      // store the new token
+      api.dispatch(tokenReceived(refreshResult.data));
+      // retry the initial query
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(handleSignOut());
+    }
+  }
+  return result;
+};
+
 export const mainApi = createApi({
-  baseQuery,
+  baseQuery: baseQueryWithReauth,
   tagTypes: Object.values(ApiTag),
   endpoints: () => ({}),
   keepUnusedDataFor: 30,

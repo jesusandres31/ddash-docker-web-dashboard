@@ -11,8 +11,9 @@ import (
 // AuthMiddleware is a middleware to check for a valid Bearer token in the Authorization header.
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Get the Authorization header value from header o query string (due to SSE)
+		// Get the Authorization header value from header
 		authHeader := r.Header.Get(config.AuthHeaderKey)
+		// Get the Authorization header value from query string (due to SSE)
 		if authHeader == "" {
 			authHeader = r.URL.Query().Get(config.AuthHeaderKey)
 		}
@@ -29,7 +30,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Invalid Authorization header format", http.StatusUnauthorized)
 			return
 		}
-
 		tokenString := authParts[1]
 
 		// Verify the token

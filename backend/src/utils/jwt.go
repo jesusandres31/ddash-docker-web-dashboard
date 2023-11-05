@@ -9,8 +9,6 @@ import (
 )
 
 // CreateAccessToken creates a JWT access token.
-// isRefresh = true => refresh token.
-// isRefresh = false => regular token.
 func CreateAccessToken(uuid string, isRefresh bool) (string, error) {
 	// Create a new token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -19,9 +17,9 @@ func CreateAccessToken(uuid string, isRefresh bool) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["sub"] = uuid
 	if isRefresh {
-		claims["exp"] = time.Now().Add(24 * time.Hour).Unix() // Token expires in 24 hours for refresh tokens
+		claims["exp"] = time.Now().Add(24 * time.Hour).Unix() // Refresh Token expires in 24 hours for refresh tokens
 	} else {
-		claims["exp"] = time.Now().Add(3 * time.Hour).Unix() // Token expires in 3 hours for regular tokens
+		claims["exp"] = time.Now().Add( /* 3 * time.Hour */ 5 * time.Second).Unix() // Regular Token expires in 3 hours for regular tokens
 	}
 
 	// Sign the token with the secret key
@@ -36,7 +34,7 @@ func CreateAccessToken(uuid string, isRefresh bool) (string, error) {
 // ValidateRefreshToken valida un JWT "refresh token".
 func ValidateRefreshToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Valida el método de firma y utiliza la misma clave secreta que para los tokens de acceso
+		// Validate the signing method and use the same secret key as for access tokens
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method")
 		}

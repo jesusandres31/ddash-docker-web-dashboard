@@ -3,6 +3,7 @@ export const URL = {
   SERVER: `${import.meta.env.VITE_SERVER_URL}`,
   API: `${import.meta.env.VITE_SERVER_URL}/api`,
   REPO: `${import.meta.env.REPO_URL}`,
+  REFRESH: "/refresh",
 };
 
 // app keys
