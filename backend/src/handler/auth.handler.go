@@ -2,12 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/ddash/src/config"
 	"github.com/ddash/src/lib"
 	"github.com/ddash/src/model"
 	"github.com/ddash/src/utils"
@@ -25,8 +22,13 @@ type SignInResponse struct {
 	Email        string `json:"email"`
 }
 
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refreshToken"`
+}
+
 type RefreshTokenResponse struct {
-	AccessToken string `json:"accessToken"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }
 
 // getUserByEmail
@@ -84,22 +86,15 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 
 // RefreshToken
 func RefreshToken(w http.ResponseWriter, r *http.Request) {
-	// Get the refresh token from the HTTP header
-	token := r.Header.Get(config.AuthHeaderKey)
-	if token == "" {
-		respondError(w, http.StatusUnauthorized, "Refresh token missing in the header")
+	var request RefreshTokenRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		respondError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
-	// Clean the refresh token if it contains the "Bearer " prefix
-	token = strings.TrimPrefix(token, config.BearerKey)
-
-	// Remove extra spaces
-	tokenString := strings.ReplaceAll(token, " ", "")
-	fmt.Print(tokenString)
-
 	// Validate the refresh token
-	claims, err := utils.ValidateRefreshToken(tokenString)
+	claims, err := utils.ValidateRefreshToken(request.RefreshToken)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Invalid refresh token")
 		return
@@ -112,15 +107,21 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// If the refresh token is valid, create a new access token
+	// If the refresh token is valid, create a new access and refresh token
 	accessToken, err := utils.CreateAccessToken(claims["sub"].(string), false)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Failed to create access token")
 		return
 	}
+	refreshToken, err := utils.CreateAccessToken(claims["sub"].(string), true)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, "Failed to create refresh token")
+		return
+	}
 
 	response := RefreshTokenResponse{
-		AccessToken: accessToken,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}
 
 	respondJSON(w, http.StatusOK, response)

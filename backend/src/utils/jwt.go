@@ -19,7 +19,7 @@ func CreateAccessToken(uuid string, isRefresh bool) (string, error) {
 	if isRefresh {
 		claims["exp"] = time.Now().Add(24 * time.Hour).Unix() // Refresh Token expires in 24 hours for refresh tokens
 	} else {
-		claims["exp"] = time.Now().Add( /* 3 * time.Hour */ 5 * time.Second).Unix() // Regular Token expires in 3 hours for regular tokens
+		claims["exp"] = time.Now().Add(3 * time.Hour).Unix() // Regular Token expires in 3 hours for regular tokens
 	}
 
 	// Sign the token with the secret key

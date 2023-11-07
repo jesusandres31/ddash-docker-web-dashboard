@@ -3,12 +3,13 @@ export const URL = {
   SERVER: `${import.meta.env.VITE_SERVER_URL}`,
   API: `${import.meta.env.VITE_SERVER_URL}/api`,
   REPO: `${import.meta.env.REPO_URL}`,
-  REFRESH: "/refresh",
+  REFRESH: "/auth/refresh",
 };
 
-// app keys
+// application keys
 export const key = {
   ACCESS_TOKEN: "accessToken",
+  REFRESH_TOKEN: "refreshToken",
 };
 
 // application routing
@@ -25,8 +26,8 @@ export enum AppRoutes {
 }
 
 // general config
-export const config = {
+export const conf = {
   LANDING_PAGE: AppRoutes.Containers,
-  AUTH_HEADER: "Authorization",
+  AUTHORIZATION: "Authorization",
   BEARER: "Bearer",
 };

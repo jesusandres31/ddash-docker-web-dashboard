@@ -1,11 +1,9 @@
-export interface AuthUser {
-  uuid: string;
+export interface SignUpRes {
   accessToken: string;
   refreshToken: string;
-  name: string;
 }
 
-export type RefreshTokenRes = Pick<AuthUser, "accessToken">;
+export type RefreshTokenRes = SignUpRes;
 
 export interface SignInReq {
   email: string;

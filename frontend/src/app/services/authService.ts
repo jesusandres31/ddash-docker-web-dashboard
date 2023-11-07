@@ -1,9 +1,9 @@
-import { AuthUser, SignInReq } from "src/interfaces";
+import { SignUpRes, SignInReq } from "src/interfaces";
 import { ApiTag, mainApi } from "./api";
 
 export const authApi = mainApi.injectEndpoints({
   endpoints: (build) => ({
-    signIn: build.mutation<AuthUser, SignInReq>({
+    signIn: build.mutation<SignUpRes, SignInReq>({
       query: (data) => ({
         url: `/auth/signin`,
         method: "POST",

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { NotFound, SignIn, Unauthorized } from "src/pages";
 import {
@@ -7,7 +7,8 @@ import {
   MainLoading,
   ProtectedRoute,
 } from "src/components/common";
-import { AppRoutes, config } from "src/config";
+import { AppRoutes, conf } from "src/config";
+import { useAuthSelector } from "src/slices/auth/authSlice";
 import { useAuth } from "src/hooks";
 
 const Containers = lazy(() =>
@@ -17,7 +18,12 @@ const Containers = lazy(() =>
 );
 
 function App(): JSX.Element {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuthSelector((state) => state.auth);
+  const { handleCheckAuth } = useAuth();
+
+  useEffect(() => {
+    handleCheckAuth();
+  }, []);
 
   return (
     <React.Fragment>
@@ -31,7 +37,7 @@ function App(): JSX.Element {
           <Route
             path={AppRoutes.Login}
             element={
-              isLoggedIn ? <Navigate to={config.LANDING_PAGE} /> : <SignIn />
+              isLoggedIn ? <Navigate to={conf.LANDING_PAGE} /> : <SignIn />
             }
           />
 

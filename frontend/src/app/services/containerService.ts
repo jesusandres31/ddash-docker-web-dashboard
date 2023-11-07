@@ -1,7 +1,6 @@
 import { ContainerInfo, StremRes } from "src/interfaces";
 import { ApiTag, SSE_URL, createSseUrlRequest, mainApi } from "./api";
 import { MSG } from "src/constants";
-import { getAccessToken } from "src/utils/auth";
 
 export const containerApi = mainApi.injectEndpoints({
   endpoints: (build) => ({
@@ -15,10 +14,9 @@ export const containerApi = mainApi.injectEndpoints({
         arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
+        const sseUrl = createSseUrlRequest(SSE_URL.containers);
         // create a eventSource connection when the cache subscription starts
-        const eventSource = new EventSource(
-          createSseUrlRequest(SSE_URL.containers, getAccessToken())
-        );
+        const eventSource = new EventSource(sseUrl);
         try {
           // wait for the initial query to resolve before proceeding
           await cacheDataLoaded;

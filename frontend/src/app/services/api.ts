@@ -5,27 +5,24 @@ import {
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
-import { URL, config } from "src/config";
-import { getAccessToken } from "../auth";
-import { useAuth } from "src/hooks";
-
-/**
- * API definition
- */
-export const ApiTag = {
-  Auth: "Auth",
-  Container: "Container",
-  Image: "Image",
-  Network: "Network",
-  Volume: "Volume",
-};
+import { URL, conf } from "src/config";
+import {
+  getAccessToken,
+  getRefreshToken,
+  isLocalStorage,
+  login,
+  logout,
+} from "../auth";
+import { RefreshTokenRes } from "src/interfaces";
+import { RootState } from "../store";
+import { resetAuthData, setNewTokens } from "src/slices/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: URL.API,
-  prepareHeaders: (headers) => {
-    const accessToken = getAccessToken();
+  prepareHeaders: (headers, { getState }) => {
+    const accessToken = (getState() as RootState).auth.authUser.accessToken;
     if (accessToken) {
-      headers.set(config.AUTH_HEADER, `${config.BEARER} ${accessToken}`);
+      headers.set(conf.AUTHORIZATION, `${conf.BEARER} ${accessToken}`);
     }
     return headers;
   },
@@ -36,27 +33,47 @@ const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const { handleSignOut } = useAuth();
   let result = await baseQuery(args, api, extraOptions);
-  console.log(result);
   if (
     result.error &&
     result.error.status === "PARSING_ERROR" &&
     result.error.originalStatus === 401
   ) {
+    const refreshToken = getRefreshToken();
     // try to get a new token
-    const refreshResult = await baseQuery(URL.REFRESH, api, extraOptions);
-    console.log(refreshResult);
-    if (refreshResult.data) {
+    const refreshResult = await baseQuery(
+      {
+        url: URL.REFRESH,
+        method: "POST",
+        body: { RefreshToken: refreshToken },
+      },
+      api,
+      extraOptions
+    );
+    const data = refreshResult.data as unknown as RefreshTokenRes;
+    if (data) {
       // store the new token
-      api.dispatch(tokenReceived(refreshResult.data));
+      login(data.accessToken, data.refreshToken, isLocalStorage());
+      api.dispatch(setNewTokens(data));
       // retry the initial query
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.dispatch(handleSignOut());
+      logout();
+      api.dispatch(resetAuthData());
     }
   }
   return result;
+};
+
+/**
+ * API definition
+ */
+export const ApiTag = {
+  Auth: "Auth",
+  Container: "Container",
+  Image: "Image",
+  Network: "Network",
+  Volume: "Volume",
 };
 
 export const mainApi = createApi({
@@ -73,6 +90,8 @@ export const SSE_URL = {
   containers: `${URL.API}/container?sse=true`,
 };
 
-export const createSseUrlRequest = (url: string, token: string | null) => {
-  return `${url}&${config.AUTH_HEADER}=${config.BEARER} ${token ?? ""}`;
+export const createSseUrlRequest = (url: string) => {
+  return `${url}&${conf.AUTHORIZATION}=${conf.BEARER} ${
+    getAccessToken() ?? ""
+  }`;
 };
