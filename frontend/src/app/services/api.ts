@@ -50,7 +50,7 @@ const baseQueryWithReauth: BaseQueryFn<
       api,
       extraOptions
     );
-    const data = refreshResult.data as unknown as RefreshTokenRes;
+    const data = refreshResult.data as RefreshTokenRes;
     if (data) {
       // store the new token
       login(data.accessToken, data.refreshToken, isLocalStorage());
