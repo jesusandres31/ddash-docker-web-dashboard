@@ -23,6 +23,7 @@ export enum AppRoutes {
   Images = "/images",
   Networks = "/networks",
   Volumes = "/volumes",
+  System = "/system",
 }
 
 // general config

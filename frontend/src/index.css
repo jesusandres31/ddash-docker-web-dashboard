@@ -19,6 +19,35 @@ code {
   src: url("./static/fonts/Arimo-VariableFont_wght.ttf");
 }
 
+/**
+ * scrollbar
+ */
+/* Set the width and height of the scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  border-radius: 6px;
+}
+
+/* Style the track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+/* Style the thumb (the part that is dragged) */
+::-webkit-scrollbar-thumb {
+  background: #eeeeee;
+  border-radius: 4px;
+}
+
+/* Style the thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #e4e4e4;
+}
+
+/**
+ * mui
+ */
 .MuiButton-root {
   box-shadow: none !important;
   text-transform: none !important;
