@@ -12,10 +12,43 @@ import { useAuthSelector } from "src/slices/auth/authSlice";
 import { useAuth } from "src/hooks";
 
 const Containers = lazy(() =>
-  import("src/pages").then((module) => ({
-    default: module.Containers,
-  }))
+  import("src/pages").then((module) => ({ default: module.Containers }))
 );
+const Images = lazy(() =>
+  import("src/pages").then((module) => ({ default: module.Images }))
+);
+const Volumes = lazy(() =>
+  import("src/pages").then((module) => ({ default: module.Volumes }))
+);
+const Networks = lazy(() =>
+  import("src/pages").then((module) => ({ default: module.Networks }))
+);
+const System = lazy(() =>
+  import("src/pages").then((module) => ({ default: module.System }))
+);
+
+const privateRoutes = [
+  {
+    route: AppRoutes.Containers,
+    render: <Containers />,
+  },
+  {
+    route: AppRoutes.Images,
+    render: <Images />,
+  },
+  {
+    route: AppRoutes.Volumes,
+    render: <Volumes />,
+  },
+  {
+    route: AppRoutes.Networks,
+    render: <Networks />,
+  },
+  {
+    route: AppRoutes.System,
+    render: <System />,
+  },
+];
 
 function App(): JSX.Element {
   const { isLoggedIn } = useAuthSelector((state) => state.auth);
@@ -43,14 +76,13 @@ function App(): JSX.Element {
 
           {/* protected routes */}
           <Route path={AppRoutes.Index} element={<Dashboard />}>
-            <Route
-              path={AppRoutes.Containers}
-              element={
-                <ProtectedRoute>
-                  <Containers />
-                </ProtectedRoute>
-              }
-            />
+            {privateRoutes.map((privateRoute) => (
+              <Route
+                key={privateRoute.route}
+                path={privateRoute.route}
+                element={<ProtectedRoute>{privateRoute.render}</ProtectedRoute>}
+              />
+            ))}
           </Route>
 
           {/* error routes */}

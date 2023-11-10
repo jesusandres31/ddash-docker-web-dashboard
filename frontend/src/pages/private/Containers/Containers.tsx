@@ -1,15 +1,17 @@
+import { useRouter } from "src/hooks/useRouter";
 import { useSseData } from "src/hooks/useSseData";
 
 export default function Containers() {
+  const { getRouteTitle } = useRouter();
   const { containers } = useSseData();
 
   return (
     <div>
-      Containers
+      {getRouteTitle()}
       {containers && containers.length > 0
-        ? containers.map((container, index) => (
+        ? containers.map((container) => (
             <div
-              key={`${container.Id}-${index}`}
+              key={container.Id}
               style={{
                 paddingBlock: "10px",
               }}

@@ -8,9 +8,7 @@ import (
 )
 
 func ListVolumes(w http.ResponseWriter, r *http.Request) {
-	listOptions := volume.ListOptions{}
-
 	execAndRespond(w, r, func() (interface{}, error) {
-		return lib.DockerCli.VolumeList(lib.Ctx, listOptions)
+		return lib.DockerCli.VolumeList(lib.Ctx, volume.ListOptions{})
 	})
 }

@@ -1,4 +1,4 @@
-import { ContainerInfo, StremRes } from "src/interfaces";
+import { Container, StreamRes } from "src/interfaces";
 import { ApiTag, SSE_URL, createSseUrlRequest, mainApi } from "./api";
 import { MSG } from "src/constants";
 import {
@@ -8,11 +8,11 @@ import {
 } from "@reduxjs/toolkit/query";
 import { QueryCacheLifecycleApi } from "@reduxjs/toolkit/dist/query/endpointDefinitions";
 
-const getContainersStrem = async (
+const getContainersStream = async (
   api: QueryCacheLifecycleApi<
     void,
     BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
-    StremRes<ContainerInfo>,
+    StreamRes<Container>,
     "api"
   >
 ) => {
@@ -25,7 +25,7 @@ const getContainersStrem = async (
     // when data is received from the eventSource connection to the server,
     // update our query result with the received message
     eventSource.onmessage = (event) => {
-      const eventData: ContainerInfo[] = JSON.parse(event.data);
+      const eventData: Container[] = JSON.parse(event.data);
       api.updateCachedData((draft) => {
         // empty the existing data
         Object.keys(draft).forEach((key) => delete draft[key]);
@@ -47,19 +47,19 @@ const getContainersStrem = async (
 
 export const containerApi = mainApi.injectEndpoints({
   endpoints: (build) => ({
-    getContainers: build.query<ContainerInfo[], void>({
+    getContainers: build.query<Container[], void>({
       query: () => `container`,
       providesTags: [ApiTag.Container],
     }),
-    getContainersStrem: build.query<StremRes<ContainerInfo>, void>({
+    getContainersStream: build.query<StreamRes<Container>, void>({
       queryFn: () => ({ data: {} as any }),
       async onCacheEntryAdded(arg, api) {
-        getContainersStrem(api);
+        getContainersStream(api);
       },
       providesTags: [ApiTag.Container],
     }),
   }),
 });
 
-export const { useGetContainersQuery, useGetContainersStremQuery } =
+export const { useGetContainersQuery, useGetContainersStreamQuery } =
   containerApi;

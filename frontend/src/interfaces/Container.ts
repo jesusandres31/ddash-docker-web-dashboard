@@ -1,4 +1,6 @@
-export interface ContainerInfo {
+import { DockerLabel } from "./utils";
+
+export interface Container {
   Id: string;
   Names: string[];
   Image: string;
@@ -10,7 +12,7 @@ export interface ContainerInfo {
   Ports: any[];
   SizeRw: number;
   SizeRootFs: number;
-  Labels: Record<string, string>;
+  Labels: DockerLabel | null;
   HostConfig: any;
   NetworkSettings: any;
   Mounts: any[];

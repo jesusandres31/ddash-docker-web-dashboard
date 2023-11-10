@@ -3,6 +3,6 @@ export interface Error {
   code: number;
 }
 
-export interface StremRes<T> {
+export interface StreamRes<T> {
   [key: string]: T;
 }
