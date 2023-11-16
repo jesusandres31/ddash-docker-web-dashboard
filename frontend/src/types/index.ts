@@ -5,3 +5,10 @@ export interface IColumn<T> {
   align?: "right" | "left";
   render?: (item: T) => JSX.Element | string | null;
 }
+
+export interface IMenuItem {
+  text: string;
+  icon: React.ReactNode;
+  to: string;
+  onClick?: () => void;
+}

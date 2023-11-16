@@ -1,3 +1,5 @@
+import packageJson from "../../package.json";
+
 // envs
 export const URL = {
   SERVER: `${import.meta.env.VITE_SERVER_URL}`,
@@ -5,6 +7,8 @@ export const URL = {
   REPO: `${import.meta.env.REPO_URL}`,
   REFRESH: "/auth/refresh",
 };
+
+export const version = packageJson.version;
 
 // application keys
 export const key = {
@@ -18,6 +22,7 @@ export enum AppRoutes {
   Index = "/",
   Login = "/login",
   Logout = "/logout",
+  Profile = "/profile",
   Unauthorized = "/unauthorized",
   Containers = "/containers",
   Images = "/images",

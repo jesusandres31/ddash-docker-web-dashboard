@@ -13,8 +13,13 @@ export const useRouter = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const getRoute = () => {
+    return location.pathname;
+  };
+
   return {
     handleGoTo,
     getRouteTitle,
+    getRoute,
   };
 };
