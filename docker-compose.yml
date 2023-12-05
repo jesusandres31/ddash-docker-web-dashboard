@@ -2,19 +2,19 @@ version: '3'
 
 services:
   api:
-    container_name: liber_api
+    container_name: ddash_api
     image: registry.gitlab.com/jesusandres31/ddash/backend:latest
     restart: always
     depends_on:
       - db
   app:
-    container_name: liber_app
+    container_name: ddash_app
     image: registry.gitlab.com/jesusandres31/ddash/frontend:latest
     restart: always
     depends_on:
       - api
   nginx:
-    container_name: liber_nginx
+    container_name: ddash_nginx
     image: registry.gitlab.com/jesusandres31/ddash/nginx:latest
     restart: always
     ports:
