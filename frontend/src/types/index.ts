@@ -1,5 +1,5 @@
 export interface IColumn<T> {
-  id: keyof T;
+  dataKey: keyof T;
   label: string;
   minWidth?: number;
   align?: "right" | "left";

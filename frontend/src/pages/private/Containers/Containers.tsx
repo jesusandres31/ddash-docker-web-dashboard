@@ -1,15 +1,14 @@
-import { useRouter } from "src/hooks/useRouter";
 import { useSseData } from "src/hooks/useSseData";
+import Table from "src/components/common/DefaultGrid/DefaultGrid";
+import { Box } from "@mui/material";
 
 export default function Containers() {
-  const { getRouteTitle } = useRouter();
   const { containers } = useSseData();
 
   return (
-    <div>
-      {getRouteTitle()}
-      {containers && containers.length > 0
-        ? containers.map((container) => (
+    <Box sx={{ height: "100%" }}>
+      {containers && containers.length > 0 ? (
+        <Table rows={containers} /> /* containers.map((container) => (
             <div
               key={container.Id}
               style={{
@@ -22,8 +21,8 @@ export default function Containers() {
               <p>Status: {container.Status}</p>
               <p>State: {container.State}</p>
             </div>
-          ))
-        : null}
-    </div>
+          )) */
+      ) : null}
+    </Box>
   );
 }

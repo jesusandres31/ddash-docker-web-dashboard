@@ -9,11 +9,18 @@ export interface Container {
   State: string;
   Command: string;
   Created: number;
-  Ports: any[];
+  Ports: PortMapping[];
   SizeRw: number;
   SizeRootFs: number;
   Labels: DockerLabel | null;
   HostConfig: any;
   NetworkSettings: any;
   Mounts: any[];
+}
+
+interface PortMapping {
+  IP?: string;
+  PrivatePort: number;
+  PublicPort?: number;
+  Type: string;
 }

@@ -83,3 +83,8 @@ code {
 .MuiListItem-root {
   border-radius: 5px !important;
 }
+
+.custom-cell {
+  border: solid red;
+  height: 20px !important;
+}

@@ -163,14 +163,14 @@ const CustomDrawer = () => {
 
 export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { getRouteTitle } = useRouter();
+  /* const { getRouteTitle } = useRouter(); */
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ height: "100vh", display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -196,9 +196,9 @@ export default function Dashboard() {
             >
               <MenuRounded />
             </IconButton>
-            <Typography variant="subtitle1" noWrap component="div">
+            {/* <Typography variant="subtitle1" noWrap component="div">
               {getRouteTitle()}
-            </Typography>
+            </Typography> */}
           </Grid>
           <Grid
             container
@@ -253,13 +253,16 @@ export default function Dashboard() {
       <Box
         component="main"
         sx={{
+          height: "100%",
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
         }}
       >
         <Toolbar />
-        <Outlet />
+        <Box sx={{ height: "83%" }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
