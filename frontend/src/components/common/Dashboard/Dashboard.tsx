@@ -32,6 +32,7 @@ import { useRouter } from "src/hooks/useRouter";
 import DockerIcon from "src/assets/DockerIcon";
 import LoginButton from "./LoginButton";
 import { IMenuItem } from "src/types";
+import { useIsMobile } from "src/hooks";
 
 const DRAWER_WIDTH = 230;
 
@@ -163,7 +164,7 @@ const CustomDrawer = () => {
 
 export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  /* const { getRouteTitle } = useRouter(); */
+  const { isMobile } = useIsMobile();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -172,6 +173,7 @@ export default function Dashboard() {
   return (
     <Box sx={{ height: "100vh", display: "flex" }}>
       <CssBaseline />
+
       <AppBar
         position="fixed"
         sx={{
@@ -260,7 +262,7 @@ export default function Dashboard() {
         }}
       >
         <Toolbar />
-        <Box sx={{ height: "83%" }}>
+        <Box sx={{ height: isMobile ? "90%" : { sm: `calc(100% - 60px)` } }}>
           <Outlet />
         </Box>
       </Box>
