@@ -18,11 +18,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { MenuRounded } from "@mui/icons-material";
+import { MenuRounded, SearchOffRounded } from "@mui/icons-material";
 import { useRouter } from "src/hooks/useRouter";
 import { Container } from "src/interfaces";
 import { IColumn } from "src/types";
 import { formatNulls } from "src/utils";
+import Loading from "src/components/common/Loading";
 
 const columns: IColumn<Container>[] = [
   {
@@ -93,6 +94,7 @@ function TableToolbar() {
                 variant="h6"
                 id="tableTitle"
                 component="div"
+                color="text.secondary"
               >
                 {getRouteTitle()}
               </Typography>
@@ -108,8 +110,15 @@ function TableToolbar() {
         </Grid>
         <Grid item>
           <FormControlLabel
-            control={<Switch defaultChecked />}
-            label="Only show running containers"
+            control={<Switch defaultChecked color="primary" size="small" />}
+            label={
+              <Typography variant="body2">
+                Only show running containers
+              </Typography>
+            }
+            sx={{
+              color: "text.secondary",
+            }}
           />
         </Grid>
       </Grid>
@@ -177,17 +186,19 @@ function rowContent(_index: number, row: Container) {
             align={column.align ?? "right"}
             sx={{ cursor: "pointer" }}
           >
-            <Typography
-              variant="subtitle2"
-              noWrap
-              sx={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <Tooltip title={labe}>{labe}</Tooltip>
-            </Typography>
+            <Tooltip title={labe}>
+              <Typography
+                variant="subtitle2"
+                noWrap
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {labe}
+              </Typography>
+            </Tooltip>
           </TableCell>
         );
       })}
@@ -195,13 +206,11 @@ function rowContent(_index: number, row: Container) {
   );
 }
 
-interface ContainersGridProps {
-  rows: Container[];
-}
+export default function Containers() {
+  const { containers, error } = useSseData();
 
-function ContainersGrid({ rows }: ContainersGridProps) {
   return (
-    <>
+    <Box sx={{ height: "100%" }}>
       <Paper
         style={{
           height: "100%",
@@ -210,30 +219,53 @@ function ContainersGrid({ rows }: ContainersGridProps) {
           flexDirection: "column",
         }}
       >
-        <TableToolbar />
-        <TableVirtuoso
-          style={{
-            flex: "1 1 auto",
-            overflow: "hidden",
-          }}
-          data={rows}
-          components={VirtuosoTableComponents}
-          fixedHeaderContent={fixedHeaderContent}
-          itemContent={rowContent}
-        />
+        {containers && containers.length > 0 ? (
+          <React.Fragment>
+            <TableToolbar />
+            <TableVirtuoso
+              style={{
+                flex: "1 1 auto",
+                overflow: "hidden",
+              }}
+              data={containers}
+              components={VirtuosoTableComponents}
+              fixedHeaderContent={fixedHeaderContent}
+              itemContent={rowContent}
+            />
+          </React.Fragment>
+        ) : error ? (
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            sx={{ height: "100%" }}
+            direction="column"
+            spacing={1}
+          >
+            <Grid item>
+              <SearchOffRounded
+                fontSize="large"
+                sx={{ color: "text.secondary" }}
+              />
+            </Grid>
+            <Grid item sx={{ textAlign: "center" }}>
+              <Typography variant="subtitle1" color="text.secondary">
+                No containers running
+              </Typography>
+            </Grid>
+          </Grid>
+        ) : (
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            sx={{ height: "100%" }}
+            direction="column"
+          >
+            <Loading />
+          </Grid>
+        )}
       </Paper>
-    </>
-  );
-}
-
-export default function Containers() {
-  const { containers } = useSseData();
-
-  return (
-    <Box sx={{ height: "100%" }}>
-      {containers && containers.length > 0 ? (
-        <ContainersGrid rows={containers} />
-      ) : null}
     </Box>
   );
 }

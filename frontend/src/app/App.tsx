@@ -4,7 +4,7 @@ import { NotFound, SignIn, Unauthorized } from "src/pages";
 import {
   Dashboard,
   GlobalSnackbar,
-  MainLoading,
+  Loading,
   ProtectedRoute,
 } from "src/components/common";
 import { AppRoutes, conf } from "src/config";
@@ -60,7 +60,7 @@ function App(): JSX.Element {
 
   return (
     <React.Fragment>
-      <Suspense fallback={<MainLoading />}>
+      <Suspense fallback={<Loading />}>
         <Routes>
           {/* login routes */}
           <Route

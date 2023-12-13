@@ -3,7 +3,7 @@ import { useGetContainersStreamQuery } from "src/app/services/containerService";
 import { Container } from "src/interfaces";
 
 export const useSseData = () => {
-  const { data: sseContainers } = useGetContainersStreamQuery();
+  const { data: sseContainers, error } = useGetContainersStreamQuery();
   const [containers, setContainers] = useState<Container[]>([]);
 
   useEffect(() => {
@@ -14,5 +14,6 @@ export const useSseData = () => {
 
   return {
     containers,
+    error,
   };
 };
