@@ -29,7 +29,6 @@ func getContainers() []types.Container {
 
 	// var containerInfoList []types.Container
 	// for _, container := range containers {
-	// 	containerInfo := container
 	// 	containerInfo := types.Container{
 	// 		ID:              container.ID,
 	// 		Names:           container.Names,
