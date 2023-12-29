@@ -74,6 +74,7 @@ export const ApiTag = {
   Image: "Image",
   Network: "Network",
   Volume: "Volume",
+  System: "System",
 };
 
 export const mainApi = createApi({

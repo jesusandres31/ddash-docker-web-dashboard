@@ -61,7 +61,7 @@ const MENU_ITEMS_FIRST: IMenuItem[] = [
 
 const MENU_ITEMS_SECOND: IMenuItem[] = [
   {
-    text: "System",
+    text: "System Info",
     icon: <SettingsSuggestRounded />,
     to: AppRoutes.System,
   },

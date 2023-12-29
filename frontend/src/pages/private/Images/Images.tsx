@@ -1,26 +1,43 @@
+import { Image } from "src/interfaces";
+import { IColumn } from "src/types";
 import { useGetImagesQuery } from "src/app/services/imageService";
-import { useRouter } from "src/hooks/useRouter";
+import DataGrid from "src/components/common/DataGrid/DataGrid";
+
+const columns: IColumn<Image>[] = [
+  {
+    minWidth: 50,
+    label: "Id",
+    dataKey: "Id",
+    align: "left",
+  },
+  {
+    minWidth: 150,
+    label: "RepoTags",
+    dataKey: "RepoTags",
+    align: "left",
+  },
+  {
+    minWidth: 150,
+    label: "Created",
+    dataKey: "Created",
+    align: "left",
+  },
+  {
+    minWidth: 100,
+    label: "Size",
+    dataKey: "Size",
+  },
+];
 
 export default function Images() {
-  const { getRouteTitle } = useRouter();
-  const { data: images } = useGetImagesQuery();
+  const { data: images, error } = useGetImagesQuery();
 
   return (
-    <div>
-      {getRouteTitle()}
-      {images && images.length > 0
-        ? images.map((image) => (
-            <div
-              key={image.Id}
-              style={{
-                paddingBlock: "10px",
-              }}
-            >
-              <p>ID: {image.Id}</p>
-              <p>Created {image.Created}</p>
-            </div>
-          ))
-        : null}
-    </div>
+    <DataGrid
+      items={images}
+      error={error}
+      columns={columns}
+      noItemsMsg="No Images built"
+    />
   );
 }
