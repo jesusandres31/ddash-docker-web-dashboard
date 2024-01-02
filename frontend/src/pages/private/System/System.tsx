@@ -1,7 +1,7 @@
 import { useGetDockerInfoQuery } from "src/app/services/systemService";
 import PageContainer from "src/components/common/PageContainer/PageContainer";
 import ReactJson from "react-json-view";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 
 export default function System() {
   const { data: dockerInfo } = useGetDockerInfoQuery();
@@ -17,12 +17,16 @@ export default function System() {
           </Grid>
           <Grid item>
             {dockerInfo && (
-              <ReactJson
-                src={dockerInfo}
-                theme="summerfruit:inverted"
-                // theme="monokai"
-                displayDataTypes={false}
-              />
+              <Card sx={{ height: "70vh", overflow: "scroll" }}>
+                <CardContent>
+                  <ReactJson
+                    src={dockerInfo}
+                    theme="summerfruit:inverted"
+                    // theme="monokai"
+                    displayDataTypes={false}
+                  />
+                </CardContent>
+              </Card>
             )}
           </Grid>
         </Grid>
