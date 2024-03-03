@@ -1,3 +1,5 @@
+## WIP ⚠️
+
 # ddash - Docker Web Dashboard 🐋🚢📈
 
 ddash is a lightweight Docker Web Dashboard that provides a simple interface for managing Docker containers, images, volumes and networks.
@@ -11,14 +13,28 @@ ddash is a lightweight Docker Web Dashboard that provides a simple interface for
 - Network Management
 - Authentication
 
+## Architecture
+
+### Backend
+
+Golang using Server-Sent Events (SSE).
+
+### Frontend
+
+React + Vite.
+
 ## Getting Started
 
-To get started with **ddash**, follow these steps:
+1. **Prerequisites:** Ensure that Docker is installed on your local machine.
 
-1. **Prerequisites:** Make sure you have Docker installed on your machine.
+## Images 📷
 
-2. **Clone the Repository:**
-   ```bash
-   git clone <repository-url>
-   cd ddash
-   ```
+![](images/Screenshot_1.png)
+
+![](images/Screenshot_2.png)
+
+![](images/Screenshot_3.png)
+
+![](images/Screenshot_4.png)
+
+![](images/Screenshot_5.png)
