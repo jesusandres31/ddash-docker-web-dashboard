@@ -77,8 +77,6 @@ export const ApiTag = {
   System: "System",
 };
 
-// test
-
 export const mainApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: Object.values(ApiTag),
